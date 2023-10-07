@@ -16,11 +16,13 @@ const DataStat = ({ number, label, type, arrow = true }: DataStatProps) => {
 	}).format(number);
 
 	return (
-		<Stat className="p-4 bg-white rounded-lg">
-			<StatLabel>{label}</StatLabel>
+		<Stat className="p-4 bg-white rounded-lg dark:bg-container-dark">
+			<StatLabel className="dark:text-slate-400">{label}</StatLabel>
 			<StatNumber
 				className={`${
-					type === "decrease" ? "text-red-700" : "text-green-700"
+					type === "decrease"
+						? "text-red-700 dark:text-red-400"
+						: "text-green-700 dark:text-green-400"
 				}`}
 			>
 				<Skeleton isLoaded={!isNaN(number)}>

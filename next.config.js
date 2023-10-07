@@ -4,6 +4,11 @@ const withPWA = require("next-pwa");
 
 module.exports = withPWA({
 	reactStrictMode: true,
+	experimental: {
+		fontLoaders: [
+			{ loader: "next/font/google", options: { subsets: ["latin"] } },
+		],
+	},
 	pwa: {
 		dest: "public",
 		register: true,

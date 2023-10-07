@@ -3,8 +3,9 @@ import axios from "axios";
 import { CashFlow } from "@prisma/client";
 import { useQuery } from "react-query";
 import { CashFlowContext } from "@/context/cashFlowContext";
+import useAxiosPrivate from "@/lib/hooks/useAxiosPrivate";
 
-import { Divider, StatGroup } from "@chakra-ui/react";
+import { StatGroup } from "@chakra-ui/react";
 import DataStat from "@/components/data/DataStat";
 import Chart from "@/components/data/Chart";
 import Filter from "@/components/data/Filter";
@@ -12,8 +13,9 @@ import DashboardLayout from "@/components/layout/DashboardLayout";
 import { NextPageWithLayout } from "../_app";
 
 const Overview: NextPageWithLayout = () => {
-	const { isRefetch, setIsRefetch, currentUserId, userData } =
-		useContext(CashFlowContext);
+	const { isRefetch, setIsRefetch, userData } = useContext(CashFlowContext);
+	const axiosPrivate = useAxiosPrivate();
+	console.log(userData);
 
 	const [transactionType, setTransactionType] = useState("ALL");
 	const [filterByYear, setFilterByYear] = useState("");
@@ -44,8 +46,8 @@ const Overview: NextPageWithLayout = () => {
 			transactionType,
 		],
 		() =>
-			axios.get(
-				`/api/cashflow?page=1${isYear}&transactionType=${transactionType}&userId=${currentUserId?.id}`
+			axiosPrivate.get(
+				`/api/cashflow?page=1${isYear}&transactionType=${transactionType}&userId=${userData?.id}`
 			),
 		{
 			keepPreviousData: true,
@@ -54,10 +56,10 @@ const Overview: NextPageWithLayout = () => {
 	);
 
 	useEffect(() => {
-		if (isRefetch || currentUserId.id !== "") refetch();
+		if (isRefetch || userData.id !== "") refetch();
 		setIsRefetch(false);
 	}, [
-		currentUserId,
+		userData,
 		isRefetch,
 		filterByYear,
 		filterByMonth,
@@ -94,7 +96,7 @@ const Overview: NextPageWithLayout = () => {
 
 	return (
 		<section className="p-4">
-			<div className="flex w-full flex-wrap sm:flex-nowrap gap-2 bg-white p-4 rounded-lg">
+			<div className="flex flex-wrap w-full gap-2 p-4 bg-white rounded-lg dark:bg-container-dark sm:flex-nowrap">
 				<Filter
 					transactionType={transactionType}
 					setTransactionType={setTransactionType}
@@ -102,9 +104,10 @@ const Overview: NextPageWithLayout = () => {
 					setFilterByYear={setFilterByYear}
 					filterByMonth={filterByMonth}
 					setFilterByMonth={setFilterByMonth}
+					currentYear={true}
 				/>
 			</div>
-			<StatGroup className="gap-4 mt-4">
+			<StatGroup className="w-full gap-4 mt-4">
 				<DataStat
 					label="Total pengeluaran"
 					type="decrease"
@@ -124,18 +127,12 @@ const Overview: NextPageWithLayout = () => {
 					arrow={true}
 				/>
 			</StatGroup>
-			<Divider />
-			<div>
-				{expenseData !== undefined &&
-					incomeData !== undefined &&
-					!isLoading &&
-					!isFetching && (
-						<Chart
-							expenseData={expenseData}
-							incomeData={incomeData}
-						/>
-					)}
-			</div>
+			{expenseData !== undefined &&
+				incomeData !== undefined &&
+				!isLoading &&
+				!isFetching && (
+					<Chart expenseData={expenseData} incomeData={incomeData} />
+				)}
 		</section>
 	);
 };

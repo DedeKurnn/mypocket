@@ -18,7 +18,7 @@ export default function Home() {
 			password: event.currentTarget.password.value,
 		};
 		try {
-			const { data } = await axios.post("/api/auth/register", payload);
+			const { data } = await axios.post("/api/auth/registerx", payload);
 
 			alert(JSON.stringify(data));
 

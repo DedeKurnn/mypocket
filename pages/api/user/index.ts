@@ -1,30 +1,29 @@
 import prisma from "@/lib/prisma";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { verify } from "@/lib/jose";
+import { verify, decode } from "jsonwebtoken";
 
-interface IRequestBody {
-	id: string;
-}
+const REFRESH_TOKEN_SECRET = process.env.NEXT_AUTH_REFRESH_TOKEN_SECRET;
 
 export default async function handler(
 	req: NextApiRequest,
 	res: NextApiResponse
 ) {
-	const { id } = req.query;
+	const { jwt } = req.cookies;
 
-	const { AUTH_COOKIE } = req.cookies;
-
-	if (!AUTH_COOKIE || !verify(AUTH_COOKIE)) {
+	if (!jwt || !verify(jwt, REFRESH_TOKEN_SECRET!)) {
 		return res.json({
 			error: "Unauthorized",
 			status: 401,
 		});
 	}
 
+	const userData = decode(jwt);
+	console.log(userData);
+
 	if (req.method === "GET") {
 		const user = await prisma.user.findUnique({
 			where: {
-				id: id?.toString(),
+				id: userData.id?.toString(),
 			},
 		});
 

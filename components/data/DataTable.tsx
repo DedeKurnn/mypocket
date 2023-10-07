@@ -36,15 +36,17 @@ const DataTable = ({
 	return loading ? (
 		<SkeletonTable />
 	) : (
-		<TableContainer className="my-4 bg-white py-4 rounded-lg">
+		<TableContainer className="my-4 bg-white dark:bg-container-dark py-4 rounded-lg">
 			<Table variant="simple" size="md">
 				<Thead>
 					<Tr>
-						<Th className="w-fit">Amount</Th>
-						<Th className="w-full">Description</Th>
-						<Th>Date</Th>
-						<Th className="w-fit">Type</Th>
-						<Th>Action</Th>
+						<Th className="w-fit dark:text-slate-400">Amount</Th>
+						<Th className="w-full dark:text-slate-400">
+							Description
+						</Th>
+						<Th className="dark:text-slate-400">Date</Th>
+						<Th className="w-fit dark:text-slate-400">Type</Th>
+						<Th className="dark:text-slate-400">Action</Th>
 					</Tr>
 				</Thead>
 				<Tbody>
@@ -64,7 +66,7 @@ const DataTable = ({
 					) : (
 						<Tr>
 							<Td colSpan={5}>
-								<p className="flex justify-center py-4">
+								<p className="flex justify-center py-4 dark:text-slate-400">
 									No data
 								</p>
 							</Td>
@@ -73,18 +75,18 @@ const DataTable = ({
 				</Tbody>
 			</Table>
 			<div className="!flex content-center justify-center mt-4 gap-4">
-				<Button onClick={setPrev}>
+				<Button onClick={setPrev} className="dark:bg-slate-600">
 					<ChevronLeftIcon className="h-4 w-4" />
 				</Button>
 				<Input
 					type="number"
-					className="!w-12"
+					className="!w-12 dark:text-white dark:border-slate-400"
 					value={pageNumber}
 					onChange={(e: ChangeEvent<HTMLInputElement>) =>
 						setSkip(Number(e.target.value))
 					}
 				/>
-				<Button onClick={setNext}>
+				<Button onClick={setNext} className="dark:bg-slate-600">
 					<ChevronRightIcon className="h-4 w-4" />
 				</Button>
 			</div>

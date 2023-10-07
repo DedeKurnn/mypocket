@@ -38,7 +38,6 @@ const Sidebar = ({
 	const { userData } = useContext(CashFlowContext);
 
 	const handleLogout = async () => {
-		console.log("Ini logout");
 		setIsLoading(true);
 		try {
 			const response = await axios.get("/api/auth/logout");
@@ -54,7 +53,7 @@ const Sidebar = ({
 	return (
 		<aside
 			className={classNames({
-				"bg-white text-slate-700 fixed md:relative md:translate-x-0 z-20":
+				"bg-white text-slate-700 fixed md:relative md:translate-x-0 z-20 dark:bg-container-dark":
 					true,
 				"transition-all duration-300 ease-in-out": true,
 				"w-[300px] shrink-1": !collapsed,
@@ -77,13 +76,15 @@ const Sidebar = ({
 					})}
 				>
 					{!collapsed && (
-						<span className="whitespace-nowrap">My Logo</span>
+						<span className="whitespace-nowrap dark:text-slate-300">
+							My Logo
+						</span>
 					)}
 					<button
-						className="grid place-content-center hover:bg-indigo-800 w-10 h-10 rounded-full opacity-0 md:opacity-100"
+						className="grid w-10 h-10 rounded-full opacity-0 place-content-center hover:bg-indigo-400 md:opacity-100"
 						onClick={() => setCollapsed(!collapsed)}
 					>
-						<Icon className="w-5 h-5" />
+						<Icon className="w-5 h-5 dark:text-slate-300" />
 					</button>
 				</div>
 				<nav className="flex-grow">
@@ -97,7 +98,7 @@ const Sidebar = ({
 								"grid place-content-stretch p-4 ": true,
 							})}
 						>
-							<div className="gap-4 items-center flex flex-col overflow-hidden">
+							<div className="flex flex-col items-center gap-4 overflow-hidden">
 								<Image
 									loader={imageLoader}
 									src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
@@ -110,13 +111,13 @@ const Sidebar = ({
 									})}
 								/>
 								{!collapsed && (
-									<div className="flex flex-col ">
-										<span className="text-slate-700 my-0">
+									<div className="flex flex-col items-center justify-center">
+										<span className="my-0 font-semibold text-slate-700 dark:text-slate-300">
 											{userData!.name}
 										</span>
 										<Link
 											href="/"
-											className="text-slate-700 text-sm whitespace-nowrap"
+											className="text-sm text-slate-700 dark:text-slate-400 whitespace-nowrap"
 										>
 											View Profile
 										</Link>
@@ -129,12 +130,14 @@ const Sidebar = ({
 								<li
 									key={index}
 									className={classNames({
-										"text-slate-700 hover:bg-indigo-300 flex justify-center items-center":
+										"text-slate-700 dark:text-slate-300 dark:hover:bg-indigo-800 relative hover:bg-indigo-300 flex justify-center items-center":
 											true, //colors
 										"transition-colors duration-300": true, //animation
 										"rounded-md mx-3 gap-4 ": !collapsed,
 										"rounded-full mx-3 w-10 h-10 flex":
 											collapsed,
+										"bg-indigo-100 dark:bg-indigo-950":
+											router.pathname === item.href,
 									})}
 								>
 									<Link
@@ -146,7 +149,15 @@ const Sidebar = ({
 											"justify-center": collapsed,
 										})}
 									>
-										<div>{item.icon}</div>
+										<div
+											className={classNames({
+												"text-indigo-700 dark:text-indigo-500":
+													router.pathname ===
+													item.href,
+											})}
+										>
+											{item.icon}
+										</div>
 										{!collapsed && (
 											<span className="whitespace-nowrap">
 												{item.label}
@@ -158,7 +169,7 @@ const Sidebar = ({
 						})}
 						<li
 							className={classNames({
-								"text-slate-700 hover:bg-indigo-300 flex justify-center items-center hover:cursor-pointer":
+								"text-slate-700 dark:text-slate-300 hover:bg-indigo-300 dark:hover:bg-indigo-700 flex justify-center items-center hover:cursor-pointer":
 									true, //colors
 								"transition-colors duration-300": true, //animation
 								"rounded-md mx-3 gap-4 ": !collapsed,
@@ -175,9 +186,9 @@ const Sidebar = ({
 							>
 								<div>
 									{isLoading ? (
-										<Spinner className="h-4 w-4" />
+										<Spinner className="w-4 h-4" />
 									) : (
-										<ArrowLeftOnRectangleIcon className="h-4 w-4" />
+										<ArrowLeftOnRectangleIcon className="w-4 h-4" />
 									)}
 								</div>
 								{!collapsed && (

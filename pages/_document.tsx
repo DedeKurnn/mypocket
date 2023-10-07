@@ -1,4 +1,6 @@
 import { Html, Head, Main, NextScript } from "next/document";
+import { ColorModeScript } from "@chakra-ui/system";
+import theme from "@/lib/theme";
 
 export default function Document() {
 	return (
@@ -9,6 +11,9 @@ export default function Document() {
 				<meta name="theme-color" content="#fff" />
 			</Head>
 			<body className="overflow-y-scroll">
+				<ColorModeScript
+					initialColorMode={theme.config.initialColorMode}
+				/>
 				<Main />
 				<NextScript />
 			</body>

@@ -4,17 +4,15 @@ import {
 	SyntheticEvent,
 	useState,
 	useEffect,
+	useContext,
 } from "react";
-import axios from "axios";
 import { CashFlowContextType } from "@/lib/types/cash-flow";
-import jwt, { JwtPayload } from "jsonwebtoken";
-import getTokenFromCookie from "@/lib/getTokenFromCookie";
-import getUserData from "@/lib/getUserData";
+import useAxiosPrivate from "@/lib/hooks/useAxiosPrivate";
+import axios from "@/lib/axios";
+import AuthContext from "./AuthContext";
 
 export const CashFlowContext = createContext<CashFlowContextType>({
-	currentUserId: {
-		id: "",
-	},
+	accessToken: "",
 	userData: {
 		createdAt: "",
 		email: "",
@@ -22,6 +20,7 @@ export const CashFlowContext = createContext<CashFlowContextType>({
 		name: "",
 		updatedAt: "",
 	},
+	setUserData: () => {},
 	isRefetch: false,
 	setIsRefetch: () => {},
 	handleCreateData: async (
@@ -49,10 +48,9 @@ export const CashFlowContextProvider = ({
 }: {
 	children: ReactNode;
 }) => {
+	const axiosPrivate = useAxiosPrivate();
+	const [accessToken, setAccessToken] = useState("");
 	const [isRefetch, setIsRefetch] = useState(false);
-	const [currentUserId, setCurrentUserId] = useState<JwtPayload>({
-		id: "",
-	});
 	const [userData, setUserData] = useState<CashFlowContextType["userData"]>({
 		createdAt: "",
 		email: "",
@@ -62,25 +60,10 @@ export const CashFlowContextProvider = ({
 	});
 
 	useEffect(() => {
-		const isJwtPayload = (data: any): data is JwtPayload => {
-			return typeof data === "object" && "id" in data;
-		};
-		// Get the token from your storage (cookie, localStorage, etc.)
-		const authToken = getTokenFromCookie("AUTH_COOKIE");
-		if (authToken) {
-			const decodedToken = jwt.decode(authToken);
-			if (isJwtPayload(decodedToken)) {
-				setCurrentUserId(decodedToken);
-			}
-		}
-	}, []);
-
-	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const response = await getUserData(currentUserId.id);
-				setUserData(response);
-				console.log(userData);
+				const response = await axios.get(`/api/user`);
+				setUserData(response.data);
 			} catch (error: any) {
 				if (error.name === "AbortError") {
 					console.log("Request aborted");
@@ -89,11 +72,8 @@ export const CashFlowContextProvider = ({
 				}
 			}
 		};
-
-		if (currentUserId.id) {
-			fetchData();
-		}
-	}, [currentUserId]);
+		fetchData();
+	}, []);
 
 	const handleCreateData: CashFlowContextType["handleCreateData"] = async (
 		amount: number,
@@ -105,12 +85,12 @@ export const CashFlowContextProvider = ({
 			date.getTime() - date.getTimezoneOffset() * 60000
 		);
 
-		await axios.post(`/api/cashflow`, {
+		await axiosPrivate.post(`/api/cashflow`, {
 			amount: amount,
 			description: description,
 			date: dateOffset,
 			transactionType: category,
-			userId: currentUserId.id,
+			userId: userData.id,
 		});
 
 		setIsRefetch(true);
@@ -121,8 +101,8 @@ export const CashFlowContextProvider = ({
 		id: number
 	) => {
 		e.preventDefault();
-		await axios.delete(
-			`/api/cashflow/${id}?userIdQuery=${currentUserId.id}`
+		await axiosPrivate.delete(
+			`/api/cashflow/${id}?userIdQuery=${userData.id}`
 		);
 		setIsRefetch(true);
 	};
@@ -140,7 +120,7 @@ export const CashFlowContextProvider = ({
 		const dateOffset = new Date(
 			date.getTime() - date.getTimezoneOffset() * 60000
 		);
-		await axios.patch(`/api/cashflow/${id}`, {
+		await axiosPrivate.patch(`/api/cashflow/${id}`, {
 			amount: amount,
 			description: description,
 			date: dateOffset,
@@ -153,13 +133,14 @@ export const CashFlowContextProvider = ({
 	return (
 		<CashFlowContext.Provider
 			value={{
-				currentUserId,
+				userData,
 				isRefetch,
 				setIsRefetch,
 				handleCreateData,
 				handleEditData,
 				handleDeleteData,
-				userData,
+				accessToken,
+				setUserData,
 			}}
 		>
 			{children}

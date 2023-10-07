@@ -1,7 +1,8 @@
 import HighchartsReact from "highcharts-react-official";
-import Highcharts from "highcharts/highstock";
+import Highcharts from "highcharts";
 import mapDataToMonths from "@/lib/mapDataToMonths";
 import { CashFlow } from "@prisma/client";
+import { useState } from "react";
 
 type ChartProps = {
 	expenseData: CashFlow[];
@@ -19,34 +20,29 @@ interface AxisFormatterContext {
 const Chart = ({ expenseData, incomeData }: ChartProps) => {
 	const income = mapDataToMonths(incomeData);
 	const expense = mapDataToMonths(expenseData);
+
 	const difference = income.map(
 		(incomeValue, index) => incomeValue - expense[index]
 	);
 
 	const months = [
-		"January",
-		"February",
-		"March",
-		"April",
+		"Jan",
+		"Feb",
+		"Mar",
+		"Apr",
 		"May",
-		"June",
-		"July",
-		"August",
-		"September",
-		"October",
-		"November",
-		"December",
+		"Jun",
+		"Jul",
+		"Aug",
+		"Sep",
+		"Oct",
+		"Nov",
+		"Dec",
 	];
 
-	Highcharts.setOptions({
-		lang: {
-			numericSymbols: ["000", "Jt", "M", "T"],
-		},
-	});
-
-	const options = {
+	const [options, setOptions]: any = useState({
 		title: {
-			text: "Data Tahunan",
+			text: "",
 		},
 		chart: {
 			type: "column",
@@ -140,10 +136,17 @@ const Chart = ({ expenseData, incomeData }: ChartProps) => {
 			hideDelay: 100,
 			outside: false,
 		},
-	};
+	});
 
 	return (
-		<div className="my-4 p-4 bg-white rounded-lg">
+		<div
+			className="grid w-full grid-cols-1 my-4 bg-white rounded-lg highcharts-dark dark:bg-container-dark place-content-center w-p-4"
+			id="highchart"
+		>
+			<h2 className="bottom-0 my-4 font-semibold text-20xl right-">
+				Yearly Data
+			</h2>
+			<div className="w-full mb-8 border-b-2 bg-slate-900" />
 			<HighchartsReact
 				highcharts={Highcharts}
 				options={options}

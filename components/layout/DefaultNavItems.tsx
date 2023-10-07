@@ -1,12 +1,14 @@
 import React from "react";
 import { ArrowsUpDownIcon } from "@heroicons/react/24/outline";
 import { HomeIcon, WalletIcon, ChartBarIcon } from "@heroicons/react/24/solid";
+import { useRouter } from "next/router";
 // define a NavItem prop
 export type NavItem = {
 	label: string;
 	href: string;
 	icon: React.ReactNode;
 };
+
 export const defaultNavItems: NavItem[] = [
 	{
 		label: "Dashboard",

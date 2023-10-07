@@ -2,8 +2,7 @@ import { useEffect, useState, useContext, ReactElement } from "react";
 import { useDisclosure } from "@chakra-ui/react";
 import { useQuery } from "react-query";
 import { CashFlowContext } from "@/context/cashFlowContext";
-import axios from "axios";
-import jwt, { JwtPayload } from "jsonwebtoken";
+import useAxiosPrivate from "@/lib/hooks/useAxiosPrivate";
 
 import { Button, Divider } from "@chakra-ui/react";
 import { PlusIcon } from "@heroicons/react/24/outline";
@@ -22,9 +21,9 @@ type Cookie = {
 
 const CashFlow: NextPageWithLayout = () => {
 	const router = useRouter();
+	const axiosPrivate = useAxiosPrivate();
 
-	const { isRefetch, setIsRefetch, currentUserId } =
-		useContext(CashFlowContext);
+	const { isRefetch, setIsRefetch, userData } = useContext(CashFlowContext);
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
 	const [transactionType, setTransactionType] = useState("ALL");
@@ -57,8 +56,8 @@ const CashFlow: NextPageWithLayout = () => {
 			transactionType,
 		],
 		() =>
-			axios.get(
-				`/api/cashflow?page=${pageNumber}${isYear}&transactionType=${transactionType}&take=${dataPerPage}&userId=${currentUserId?.id}`
+			axiosPrivate.get(
+				`/api/cashflow?page=${pageNumber}${isYear}&transactionType=${transactionType}&take=${dataPerPage}&userId=${userData?.id}`
 			),
 		{
 			keepPreviousData: true,
@@ -67,10 +66,10 @@ const CashFlow: NextPageWithLayout = () => {
 	);
 
 	useEffect(() => {
-		if (isRefetch || currentUserId.id !== "") refetch();
+		if (isRefetch || userData.id !== "") refetch();
 		setIsRefetch(false);
 	}, [
-		currentUserId,
+		userData,
 		isRefetch,
 		filterByYear,
 		filterByMonth,
@@ -93,7 +92,7 @@ const CashFlow: NextPageWithLayout = () => {
 		<>
 			<AddModal isOpen={isOpen} onClose={onClose} refetch={refetch} />
 			<section className="p-4">
-				<div className="flex w-full flex-wrap sm:flex-nowrap gap-2 bg-white p-4 rounded-lg">
+				<div className="flex flex-wrap w-full gap-2 p-4 bg-white dark:bg-container-dark rounded-lg md:items-end sm:flex-nowrap">
 					<div className="flex w-full gap-2 sm:w-3/4">
 						<Filter
 							transactionType={transactionType}
@@ -110,7 +109,7 @@ const CashFlow: NextPageWithLayout = () => {
 						colorScheme="teal"
 						onClick={onOpen}
 					>
-						Add
+						New entry
 					</Button>
 				</div>
 				{data && (

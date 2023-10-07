@@ -1,10 +1,12 @@
 import { SignJWT, jwtVerify, type JWTPayload } from "jose";
 
-const secret = process.env.NEXT_AUTH_SECRET_KEY;
-
-export async function sign(payload: JWTPayload): Promise<string> {
+export async function sign(
+	payload: JWTPayload,
+	secret: string,
+	expiredIn: number
+): Promise<string> {
 	const iat = Math.floor(Date.now() / 1000);
-	const exp = iat + 60 * 60; // one hour
+	const exp = iat + expiredIn;
 
 	return new SignJWT({ ...payload })
 		.setProtectedHeader({ alg: "HS256", typ: "JWT" })
@@ -14,7 +16,10 @@ export async function sign(payload: JWTPayload): Promise<string> {
 		.sign(new TextEncoder().encode(secret));
 }
 
-export async function verify(token: string): Promise<JWTPayload> {
+export async function verify(
+	token: string,
+	secret: string
+): Promise<JWTPayload> {
 	const { payload } = await jwtVerify(
 		token,
 		new TextEncoder().encode(secret)

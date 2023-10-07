@@ -19,7 +19,7 @@ const TableItem: FC<ICashFlow> = ({
 	description,
 	id,
 }) => {
-	const { handleDeleteData, currentUserId } = useContext(CashFlowContext);
+	const { handleDeleteData, userData } = useContext(CashFlowContext);
 
 	const {
 		isOpen: isOpenUpdateModal,
@@ -38,7 +38,7 @@ const TableItem: FC<ICashFlow> = ({
 		date: date,
 		description: description,
 		id: id,
-		userId: currentUserId.id,
+		userId: userData.id,
 	};
 
 	return (
@@ -55,10 +55,14 @@ const TableItem: FC<ICashFlow> = ({
 				onDelete={(e: SyntheticEvent) => handleDeleteData(e, id)}
 			/>
 			<Tr>
-				<Td>Rp{amount.toLocaleString("id-ID")}</Td>
-				<Td>{description}</Td>
-				<Td>{date.toString().split("T")[0]}</Td>
-				<Td>
+				<Td className="dark:text-slate-300">
+					Rp{amount.toLocaleString("id-ID")}
+				</Td>
+				<Td className="dark:text-slate-300">{description}</Td>
+				<Td className="dark:text-slate-300">
+					{date.toString().split("T")[0]}
+				</Td>
+				<Td className="dark:text-slate-300">
 					<div
 						className={`flex items-center justify-between mb-0 ${
 							transactionType === "EXPENSE"
@@ -68,19 +72,25 @@ const TableItem: FC<ICashFlow> = ({
 					>
 						<div>{transactionType}</div>
 						{transactionType === "EXPENSE" ? (
-							<ArrowUpIcon className="h-4 w-4" />
+							<ArrowUpIcon className="w-4 h-4" />
 						) : (
-							<ArrowDownIcon className="h-4 w-4" />
+							<ArrowDownIcon className="w-4 h-4" />
 						)}
 					</div>
 				</Td>
 				<Td>
 					<div className="flex gap-2">
-						<Button onClick={onOpenDeleteModal}>
-							<TrashIcon className="h-4 w-4" />
+						<Button
+							onClick={onOpenDeleteModal}
+							className="dark:bg-slate-600 dark:text-white dark:hover:bg-slate-400"
+						>
+							<TrashIcon className="w-4 h-4" />
 						</Button>
-						<Button onClick={onOpenUpdateModal}>
-							<PencilSquareIcon className="h-4 w-4" />
+						<Button
+							onClick={onOpenUpdateModal}
+							className="dark:bg-slate-600 dark:text-white dark:hover:bg-slate-400"
+						>
+							<PencilSquareIcon className="w-4 h-4" />
 						</Button>
 					</div>
 				</Td>

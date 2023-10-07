@@ -1,4 +1,3 @@
-
 import prisma from "@/lib/prisma";
 import * as bcrypt from "bcrypt";
 import { serialize } from "cookie";
@@ -8,9 +7,15 @@ import type { NextApiRequest, NextApiResponse } from "next";
 interface IRequestBody {
 	username: string;
 	password: string;
+	remember: string;
 }
 
-const MAX_AGE = 4 * 60 * 60;
+const ACCESS_TOKEN_SECRET = process.env.NEXT_AUTH_SECRET_KEY;
+const REFRESH_TOKEN_SECRET = process.env.NEXT_AUTH_REFRESH_TOKEN_SECRET;
+
+const ACCESS_TOKEN_MAX_AGE = 10;
+
+const REFRESH_TOKEN_MAX_AGE = 10;
 
 export default async function handler(
 	req: NextApiRequest,
@@ -27,19 +32,54 @@ export default async function handler(
 
 		if (user && (await bcrypt.compare(body.password, user.password))) {
 			const { password, ...userWithoutPassword } = user;
-			const accessToken = await sign(userWithoutPassword);
+			const accessToken = await sign(
+				userWithoutPassword,
+				ACCESS_TOKEN_SECRET!,
+				ACCESS_TOKEN_MAX_AGE
+			);
 
-			const serialized = serialize("AUTH_COOKIE", accessToken, {
-				httpOnly: false,
-				sameSite: "strict",
-				maxAge: MAX_AGE,
-				path: "/",
-			});
+			const refreshToken = await sign(
+				userWithoutPassword,
+				REFRESH_TOKEN_SECRET!,
+				REFRESH_TOKEN_MAX_AGE
+			);
 
-			return res.setHeader("Set-Cookie", serialized).json({
-				status: 200,
-				message: "Authenticated",
-			});
+			const serializedAccessToken = serialize(
+				"AUTH_COOKIE",
+				accessToken,
+				{
+					httpOnly: true,
+					sameSite: "strict",
+					maxAge: ACCESS_TOKEN_MAX_AGE,
+					path: "/",
+				}
+			);
+
+			let serializedRefreshToken = "";
+
+			if (body.remember) {
+				serializedRefreshToken = serialize(
+					"REFRESH_COOKIE",
+					refreshToken,
+					{
+						httpOnly: true,
+						sameSite: "strict",
+						maxAge: REFRESH_TOKEN_MAX_AGE,
+						path: "/",
+					}
+				);
+			}
+
+			return res
+				.setHeader("Set-Cookie", [
+					serializedAccessToken,
+					serializedRefreshToken,
+				])
+				.json({
+					staus: 200,
+					message: "Authenticated",
+					data: { ...userWithoutPassword },
+				});
 		} else {
 			return res.json({
 				status: 401,

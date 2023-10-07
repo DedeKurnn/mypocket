@@ -2,7 +2,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { CashFlow } from "@prisma/client";
 import prisma from "@/lib/prisma";
-import { verify } from "@/lib/jose";
+import { verify } from "jsonwebtoken";
+
+const ACCESS_TOKEN_SECRET = process.env.NEXT_AUTH_SECRET_KEY;
 
 export default async function handler(
 	req: NextApiRequest,
@@ -13,9 +15,9 @@ export default async function handler(
 	const { amount, description, date, transactionType, userId } =
 		await req.body;
 
-	const { AUTH_COOKIE } = req.cookies;
+	const { jwt } = req.cookies;
 
-	if (!AUTH_COOKIE || !verify(AUTH_COOKIE)) {
+	if (!jwt || !verify(jwt, ACCESS_TOKEN_SECRET!)) {
 		return res.json({
 			error: "Unauthorized",
 			status: 401,

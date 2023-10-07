@@ -12,10 +12,8 @@ export interface ICashFlow {
 	date: Date;
 }
 
-// TODO: Create user interface
-
 export type CashFlowContextType = {
-	currentUserId: JwtPayload;
+	accessToken: string | null;
 	userData: {
 		createdAt: string;
 		email: string;
@@ -23,6 +21,7 @@ export type CashFlowContextType = {
 		name: string;
 		updatedAt: string;
 	};
+	setUserData: Dispatch<SetStateAction<any>>;
 	isRefetch: boolean;
 	setIsRefetch: Dispatch<SetStateAction<boolean>>;
 	handleDeleteData: (e: SyntheticEvent, id: number) => void;

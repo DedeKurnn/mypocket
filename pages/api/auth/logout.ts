@@ -8,6 +8,10 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 			maxAge: -1,
 			path: "/",
 		}),
+		serialize("REFRESH_COOKIE", "", {
+			maxAge: -1,
+			path: "/",
+		}),
 	]);
 
 	// Redirect the user to the sign-in page or any other desired location
