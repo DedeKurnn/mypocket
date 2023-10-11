@@ -3,19 +3,15 @@ import axios from "axios";
 import { CashFlow } from "@prisma/client";
 import { useQuery } from "react-query";
 import { CashFlowContext } from "@/context/cashFlowContext";
-import useAxiosPrivate from "@/lib/hooks/useAxiosPrivate";
 
-import { StatGroup } from "@chakra-ui/react";
+import { StatGroup, useToast } from "@chakra-ui/react";
 import DataStat from "@/components/data/DataStat";
 import Chart from "@/components/data/Chart";
 import Filter from "@/components/data/Filter";
-import DashboardLayout from "@/components/layout/DashboardLayout";
-import { NextPageWithLayout } from "../_app";
 
-const Overview: NextPageWithLayout = () => {
+const Overview = () => {
 	const { isRefetch, setIsRefetch, userData } = useContext(CashFlowContext);
-	const axiosPrivate = useAxiosPrivate();
-	console.log(userData);
+	const toast = useToast();
 
 	const [transactionType, setTransactionType] = useState("ALL");
 	const [filterByYear, setFilterByYear] = useState("");
@@ -32,10 +28,8 @@ const Overview: NextPageWithLayout = () => {
 	const {
 		isLoading,
 		isError,
-		error,
 		data: data,
 		isFetching,
-		isPreviousData,
 		refetch,
 	} = useQuery(
 		[
@@ -46,7 +40,7 @@ const Overview: NextPageWithLayout = () => {
 			transactionType,
 		],
 		() =>
-			axiosPrivate.get(
+			axios.get(
 				`/api/cashflow?page=1${isYear}&transactionType=${transactionType}&userId=${userData?.id}`
 			),
 		{
@@ -56,7 +50,18 @@ const Overview: NextPageWithLayout = () => {
 	);
 
 	useEffect(() => {
-		if (isRefetch || userData.id !== "") refetch();
+		if (isError) {
+			toast({
+				title: "An error occured",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
+		}
+	}, [isError]);
+
+	useEffect(() => {
+		if (isRefetch || userData?.id !== "") refetch();
 		setIsRefetch(false);
 	}, [
 		userData,
@@ -96,7 +101,7 @@ const Overview: NextPageWithLayout = () => {
 
 	return (
 		<section className="p-4">
-			<div className="flex flex-wrap w-full gap-2 p-4 bg-white rounded-lg dark:bg-container-dark sm:flex-nowrap">
+			<div className="flex flex-wrap w-full gap-2 p-4 bg-white rounded-lg shadow-sm dark:bg-container-dark sm:flex-nowrap">
 				<Filter
 					transactionType={transactionType}
 					setTransactionType={setTransactionType}
@@ -107,13 +112,7 @@ const Overview: NextPageWithLayout = () => {
 					currentYear={true}
 				/>
 			</div>
-			<StatGroup className="w-full gap-4 mt-4">
-				<DataStat
-					label="Total pengeluaran"
-					type="decrease"
-					number={totalExpense}
-					arrow={false}
-				/>
+			<StatGroup className="flex-col w-full gap-4 mt-4 lg:flex-row">
 				<DataStat
 					label="Total pemasukan"
 					type="increase"
@@ -121,7 +120,13 @@ const Overview: NextPageWithLayout = () => {
 					arrow={false}
 				/>
 				<DataStat
-					label="Selisih"
+					label="Total pengeluaran"
+					type="decrease"
+					number={totalExpense}
+					arrow={false}
+				/>
+				<DataStat
+					label="Bersih"
 					type={totalDifference > 0 ? "increase" : "decrease"}
 					number={totalDifference}
 					arrow={true}
@@ -135,10 +140,6 @@ const Overview: NextPageWithLayout = () => {
 				)}
 		</section>
 	);
-};
-
-Overview.getLayout = (page: any) => {
-	return <DashboardLayout>{page}</DashboardLayout>;
 };
 
 export default Overview;

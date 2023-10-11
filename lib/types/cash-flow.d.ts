@@ -13,7 +13,6 @@ export interface ICashFlow {
 }
 
 export type CashFlowContextType = {
-	accessToken: string | null;
 	userData: {
 		createdAt: string;
 		email: string;
@@ -23,6 +22,8 @@ export type CashFlowContextType = {
 	};
 	setUserData: Dispatch<SetStateAction<any>>;
 	isRefetch: boolean;
+	isDarkMode: boolean;
+	setIsDarkMode: Dispatch<SetStateAction<boolean>>;
 	setIsRefetch: Dispatch<SetStateAction<boolean>>;
 	handleDeleteData: (e: SyntheticEvent, id: number) => void;
 	handleEditData: (

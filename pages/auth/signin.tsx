@@ -1,7 +1,7 @@
 import axios, { AxiosError } from "axios";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 import Link from "next/link";
-import useAuth from "@/lib/hooks/useAuth";
+import useHandleError, { Error } from "@/lib/hooks/useHandleError";
 
 import {
 	Input,
@@ -9,55 +9,48 @@ import {
 	FormLabel,
 	Button,
 	Checkbox,
+	FormErrorMessage,
+	useToast,
 } from "@chakra-ui/react";
-import { useContext, useState, useEffect } from "react";
-import { CashFlowContext } from "@/context/cashFlowContext";
 
-export default function Home() {
-	const { setAuth, persist, setPersist }: any = useAuth();
-	const { push } = useRouter();
+const SignIn = () => {
+	const toast = useToast();
+	const checkError = useHandleError();
 	const [isRemember, setIsRemember] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
-	const { setUserData } = useContext(CashFlowContext);
+	const [error, setError] = useState<Error>();
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		setIsLoading(true);
 		event.preventDefault();
 
-		const username = event.currentTarget.username.value;
-		const password = event.currentTarget.password.value;
+		const payload = {
+			email: event.currentTarget.email.value,
+			password: event.currentTarget.password.value,
+			remember: isRemember,
+		};
+
 		try {
-			const response = await axios.post(
-				"/api/auth/loginx",
-				JSON.stringify({ username, password }),
-				{
-					headers: { "Content-Type": "application/json" },
-					withCredentials: true,
-				}
-			);
-
-			const result = response?.data;
-			const { accessToken, userData } = result;
-			console.log({ username, accessToken });
-			sessionStorage.setItem("currentUser", )
-			setAuth({ username, accessToken });
-			setUserData(userData);
-			push("/dashboard");
+			const response = await axios.post("/api/auth/login", payload);
+			if (response.status === 200) {
+				window.location.href = "/dashboard";
+			}
 		} catch (e) {
-			const error = e as AxiosError;
+			const err = e as AxiosError;
+			setError(checkError(err.response?.status!));
 
-			alert(error.message);
+			if (error?.isInternalError) {
+				toast({
+					title: "Something's not right",
+					description: err.message,
+					status: "error",
+					duration: 5000,
+					isClosable: true,
+				});
+			}
 		}
 		setIsLoading(false);
 	};
-
-	const togglePersist = () => {
-		setPersist((prev: any) => !prev);
-	};
-
-	useEffect(() => {
-		localStorage.setItem("persist", persist);
-	}, [persist]);
 
 	return (
 		<main
@@ -76,16 +69,16 @@ export default function Home() {
 						<h1 className="mb-2">Sign In</h1>
 						<p>Please sign in to your account</p>
 					</div>
-					<FormControl>
+					<FormControl isInvalid={error?.isNotFound}>
 						<FormLabel>Email</FormLabel>
-						<Input
-							type="email"
-							id="username"
-							name="username"
-							required
-						/>
+						<Input type="email" id="email" name="email" required />
+						{error?.isNotFound && (
+							<FormErrorMessage>
+								User not found or email is invalid
+							</FormErrorMessage>
+						)}
 					</FormControl>
-					<FormControl>
+					<FormControl isInvalid={error?.isUnauthorized}>
 						<FormLabel>Password</FormLabel>
 						<Input
 							type="password"
@@ -93,12 +86,17 @@ export default function Home() {
 							name="password"
 							required
 						/>
+						{error?.isUnauthorized && (
+							<FormErrorMessage>
+								Password is invalid
+							</FormErrorMessage>
+						)}
 					</FormControl>
 					<Checkbox
 						className="mb-4"
 						id="rememberMe"
-						isChecked={persist}
-						onChange={togglePersist}
+						isChecked={isRemember}
+						onChange={() => setIsRemember(!isRemember)}
 					>
 						Trust this device
 					</Checkbox>
@@ -111,7 +109,7 @@ export default function Home() {
 					>
 						Sign in
 					</Button>
-					<p className="mt-4 text-gray-500">
+					<p className="mt-4 text-center text-gray-500">
 						Doesn't have an account?{" "}
 						<span className="underline hover:text-teal-500">
 							<Link href="/auth/signup">Register here</Link>
@@ -121,4 +119,6 @@ export default function Home() {
 			</div>
 		</main>
 	);
-}
+};
+
+export default SignIn;

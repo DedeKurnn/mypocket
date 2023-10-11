@@ -1,12 +1,12 @@
 import React from "react";
 import { ArrowsUpDownIcon } from "@heroicons/react/24/outline";
-import { HomeIcon, WalletIcon, ChartBarIcon } from "@heroicons/react/24/solid";
-import { useRouter } from "next/router";
-// define a NavItem prop
+import { HomeIcon, WalletIcon, UserIcon } from "@heroicons/react/24/solid";
+
 export type NavItem = {
 	label: string;
 	href: string;
 	icon: React.ReactNode;
+	disabled?: boolean;
 };
 
 export const defaultNavItems: NavItem[] = [
@@ -21,13 +21,14 @@ export const defaultNavItems: NavItem[] = [
 		icon: <ArrowsUpDownIcon className="w-4 h-4" />,
 	},
 	{
-		label: "Analytics",
-		href: "/dashboard/analytics",
-		icon: <ChartBarIcon className="w-4 h-4" />,
-	},
-	{
-		label: "Budgeting (TBA)",
+		label: "Budgeting (coming soon)",
 		href: "/dashboard/budgeting",
 		icon: <WalletIcon className="w-4 h-4" />,
+		disabled: true,
+	},
+	{
+		label: "Profile",
+		href: "/dashboard/profile",
+		icon: <UserIcon className="w-4 h-4" />,
 	},
 ];

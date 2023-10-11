@@ -1,30 +1,19 @@
-import { useEffect, useState, useContext, ReactElement } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useDisclosure } from "@chakra-ui/react";
 import { useQuery } from "react-query";
 import { CashFlowContext } from "@/context/cashFlowContext";
-import useAxiosPrivate from "@/lib/hooks/useAxiosPrivate";
+import axios from "@/lib/axios";
 
-import { Button, Divider } from "@chakra-ui/react";
+import { Button, useToast } from "@chakra-ui/react";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { AddModal } from "@/components/modal/AddModal";
 import DataTable from "@/components/data/DataTable";
 import Filter from "@/components/data/Filter";
-import { useRouter } from "next/router";
-import DashboardLayout from "@/components/layout/DashboardLayout";
-import { NextPageWithLayout } from "../_app";
 
-type Cookie = {
-	email: string;
-	id: string;
-	name: string;
-};
-
-const CashFlow: NextPageWithLayout = () => {
-	const router = useRouter();
-	const axiosPrivate = useAxiosPrivate();
-
+const CashFlow = () => {
 	const { isRefetch, setIsRefetch, userData } = useContext(CashFlowContext);
 	const { isOpen, onOpen, onClose } = useDisclosure();
+	const toast = useToast();
 
 	const [transactionType, setTransactionType] = useState("ALL");
 	const [filterByYear, setFilterByYear] = useState("");
@@ -42,10 +31,7 @@ const CashFlow: NextPageWithLayout = () => {
 	const {
 		isLoading,
 		isError,
-		error,
 		data: data,
-		isFetching,
-		isPreviousData,
 		refetch,
 	} = useQuery(
 		[
@@ -56,7 +42,7 @@ const CashFlow: NextPageWithLayout = () => {
 			transactionType,
 		],
 		() =>
-			axiosPrivate.get(
+			axios.get(
 				`/api/cashflow?page=${pageNumber}${isYear}&transactionType=${transactionType}&take=${dataPerPage}&userId=${userData?.id}`
 			),
 		{
@@ -77,6 +63,17 @@ const CashFlow: NextPageWithLayout = () => {
 		pageNumber,
 	]);
 
+	useEffect(() => {
+		if (isError) {
+			toast({
+				title: "An error occured",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
+		}
+	}, [isError]);
+
 	const handlePrev = () => {
 		if (pageNumber === 1) return;
 		setPageNumber(pageNumber - 1);
@@ -92,7 +89,7 @@ const CashFlow: NextPageWithLayout = () => {
 		<>
 			<AddModal isOpen={isOpen} onClose={onClose} refetch={refetch} />
 			<section className="p-4">
-				<div className="flex flex-wrap w-full gap-2 p-4 bg-white dark:bg-container-dark rounded-lg md:items-end sm:flex-nowrap">
+				<div className="flex flex-wrap w-full gap-2 p-4 bg-white rounded-lg dark:bg-container-dark md:items-end sm:flex-nowrap">
 					<div className="flex w-full gap-2 sm:w-3/4">
 						<Filter
 							transactionType={transactionType}
@@ -125,10 +122,6 @@ const CashFlow: NextPageWithLayout = () => {
 			</section>
 		</>
 	);
-};
-
-CashFlow.getLayout = (page: ReactElement) => {
-	return <DashboardLayout>{page}</DashboardLayout>;
 };
 
 export default CashFlow;

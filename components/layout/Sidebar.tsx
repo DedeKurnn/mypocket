@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import Link from "next/link";
 import Image from "next/image";
-import axios from "axios";
+import axios from "@/lib/axios";
 import { useRouter } from "next/router";
 
 import { defaultNavItems, NavItem } from "./DefaultNavItems";
@@ -13,6 +13,7 @@ import {
 import { useContext, useState } from "react";
 import { CashFlowContext } from "@/context/cashFlowContext";
 import { Spinner } from "@chakra-ui/react";
+import useGreetings from "@/lib/hooks/useGreetings";
 
 type Props = {
 	collapsed: boolean;
@@ -32,6 +33,8 @@ const Sidebar = ({
 		return src;
 	};
 
+	const greeting = useGreetings();
+
 	const [isLoading, setIsLoading] = useState(false);
 
 	const Icon = collapsed ? ChevronDoubleRightIcon : ChevronDoubleLeftIcon;
@@ -40,7 +43,11 @@ const Sidebar = ({
 	const handleLogout = async () => {
 		setIsLoading(true);
 		try {
-			const response = await axios.get("/api/auth/logout");
+			const response = await axios.get(
+				`/api/auth/logout?id=${userData.id}`
+			);
+
+			console.log(response.status);
 			if (response.status !== 302) {
 				return;
 			}
@@ -98,29 +105,26 @@ const Sidebar = ({
 								"grid place-content-stretch p-4 ": true,
 							})}
 						>
-							<div className="flex flex-col items-center gap-4 overflow-hidden">
+							<div className="flex items-center gap-4 overflow-hidden">
 								<Image
 									loader={imageLoader}
 									src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-									height={36}
-									width={36}
+									height={24}
+									width={24}
 									alt="profile image"
 									className={classNames({
 										"rounded-full ": true,
-										"w-16 h-16": !collapsed,
+										"w-12 h-12": !collapsed,
 									})}
 								/>
 								{!collapsed && (
-									<div className="flex flex-col items-center justify-center">
-										<span className="my-0 font-semibold text-slate-700 dark:text-slate-300">
-											{userData!.name}
+									<div className="flex flex-col justify-center">
+										<span className="-mb-1 dark:text-slate-400">
+											{greeting}
 										</span>
-										<Link
-											href="/"
-											className="text-sm text-slate-700 dark:text-slate-400 whitespace-nowrap"
-										>
-											View Profile
-										</Link>
+										<span className="my-0 font-semibold text-slate-700 dark:text-slate-300">
+											{userData?.name}
+										</span>
 									</div>
 								)}
 							</div>
@@ -138,6 +142,8 @@ const Sidebar = ({
 											collapsed,
 										"bg-indigo-100 dark:bg-indigo-950":
 											router.pathname === item.href,
+										"!text-slate-400 dark:!text-slate-700 pointer-events-none":
+											item.disabled,
 									})}
 								>
 									<Link

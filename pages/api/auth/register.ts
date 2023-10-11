@@ -4,14 +4,14 @@ import { serialize } from "cookie";
 import { sign } from "@/lib/jose";
 import type { NextApiRequest, NextApiResponse } from "next";
 
-const ACCESS_TOKEN_SECRET = process.env.NEXT_AUTH_SECRET_KEY;
+const ACCESS_TOKEN_SECRET = process.env.NEXT_AUTH_ACCESS_TOKEN_SECRET;
 interface IRequestBody {
 	username: string;
 	email: string;
 	password: string;
 }
 
-const MAX_AGE = 30 * 60;
+const MAX_AGE = 60 * 60 * 24 * 30;
 
 export default async function handler(
 	req: NextApiRequest,
@@ -19,6 +19,18 @@ export default async function handler(
 ) {
 	if (req.method === "POST") {
 		const body: IRequestBody = await req.body;
+
+		const existingUser = await prisma.user.findUnique({
+			where: {
+				email: body.email,
+			},
+		});
+
+		if (existingUser) {
+			return res.status(400).json({
+				message: "Bad Request: Email is already registered.",
+			});
+		}
 
 		const user = await prisma.user.create({
 			data: {
@@ -43,14 +55,12 @@ export default async function handler(
 				path: "/",
 			});
 
-			return res.setHeader("Set-Cookie", serialized).json({
-				status: 200,
+			return res.setHeader("Set-Cookie", serialized).status(200).json({
 				message: "Authenticated",
 			});
 		} else {
-			return res.json({
-				status: 401,
-				message: "Unauthenticated",
+			return res.status(500).json({
+				message: "Internal Server Error: Failed to create a new user.",
 			});
 		}
 	}

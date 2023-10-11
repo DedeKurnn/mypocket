@@ -30,12 +30,16 @@ const DeleteModal = ({ onClose, isOpen, onDelete }: DeleteModalProps) => {
 				onClose={onClose}
 			>
 				<AlertDialogOverlay>
-					<AlertDialogContent>
-						<AlertDialogHeader fontSize="lg" fontWeight="bold">
+					<AlertDialogContent className="dark:bg-container-dark">
+						<AlertDialogHeader
+							fontSize="lg"
+							fontWeight="bold"
+							className="dark:text-slate-200"
+						>
 							Delete data
 						</AlertDialogHeader>
 
-						<AlertDialogBody>
+						<AlertDialogBody className="dark:text-slate-300">
 							Are you sure? You can't undo this action afterwards.
 						</AlertDialogBody>
 

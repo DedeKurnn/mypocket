@@ -11,21 +11,14 @@ datasource db {
 }
 
 model User {
-  id           String             @id @default(uuid())
+  id           String     @id @default(uuid())
   name         String
-  email        String             @unique
+  email        String     @unique
   password     String
-  refreshToken UserRefreshToken[] @relation("auth token")
-  createdAt    DateTime           @default(now())
-  updatedAt    DateTime           @updatedAt
-  CashFlow     CashFlow[]         @relation("personal cashflow")
-}
-
-model UserRefreshToken {
-  id     Int     @id @default(autoincrement())
-  token  String
-  user   User?   @relation("auth token", fields: [userId], references: [id])
-  userId String?
+  refreshToken String?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  CashFlow     CashFlow[] @relation("personal cashflow")
 }
 
 model CashFlow {

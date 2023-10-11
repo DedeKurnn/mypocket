@@ -1,6 +1,6 @@
 {
 	"name": "mypocket",
-	"version": "0.1.0",
+	"version": "0.1.0-alpha",
 	"private": true,
 	"scripts": {
 		"dev": "next dev",
@@ -21,6 +21,7 @@
 		"axios": "^1.5.1",
 		"bcrypt": "^5.1.1",
 		"chakra-dayzed-datepicker": "^0.2.10",
+		"classnames": "^2.3.2",
 		"cookie": "^0.5.0",
 		"date-fns": "^2.30.0",
 		"dayzed": "^3.2.3",
@@ -32,15 +33,13 @@
 		"next": "latest",
 		"next-pwa": "5.5.4",
 		"nextjs-progressbar": "^0.0.16",
-		"prisma": "^5.3.1",
+		"prisma": "^5.4.1",
 		"prop-types": "^15.8.1",
 		"react": "latest",
 		"react-currency-input-field": "^3.6.11",
 		"react-dom": "latest",
-		"react-pro-sidebar": "^1.1.0-alpha.1",
 		"react-query": "^3.39.3",
 		"react-toggle-dark-mode": "^1.1.1",
-		"swr": "^2.2.4",
 		"tailwindcss": "^3.3.3"
 	},
 	"devDependencies": {

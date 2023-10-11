@@ -2,34 +2,23 @@ import classNames from "classnames";
 import { useRouter } from "next/router";
 import { Bars3Icon } from "@heroicons/react/24/outline";
 import { DarkModeSwitch } from "react-toggle-dark-mode";
-import { useState, useEffect } from "react";
+import { useContext } from "react";
 
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink } from "@chakra-ui/react";
+import { CashFlowContext } from "@/context/cashFlowContext";
 
 type Props = {
-	/**
-	 * Allows the parent component to modify the state when the
-	 * menu button is clicked.
-	 */
 	onMenuButtonClick(): void;
 };
 
 const Navbar = (props: Props) => {
 	const router = useRouter();
-	const [isDarkMode, setIsDarkMode] = useState(false);
+	const { isDarkMode, setIsDarkMode } = useContext(CashFlowContext);
 
 	const paths = router.pathname.split("/").slice(1);
 	const currentPage =
 		paths[paths.length - 1].charAt(0).toUpperCase() +
 		paths[paths.length - 1].slice(1);
-
-	useEffect(() => {
-		if (isDarkMode) {
-			document.querySelector("html")?.classList.add("dark");
-		} else {
-			document.querySelector("html")?.classList.remove("dark");
-		}
-	}, [isDarkMode]);
 
 	return (
 		<nav

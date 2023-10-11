@@ -16,7 +16,7 @@ const DataStat = ({ number, label, type, arrow = true }: DataStatProps) => {
 	}).format(number);
 
 	return (
-		<Stat className="p-4 bg-white rounded-lg dark:bg-container-dark">
+		<Stat className="w-full p-4 bg-white rounded-lg shadow-sm dark:bg-container-dark">
 			<StatLabel className="dark:text-slate-400">{label}</StatLabel>
 			<StatNumber
 				className={`${

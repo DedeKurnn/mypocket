@@ -2,9 +2,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import type { CashFlow } from "@prisma/client";
 import prisma from "@/lib/prisma";
-import { verify } from "jsonwebtoken";
+import { verify } from "@/lib/jose";
 
-const ACCESS_TOKEN_SECRET = process.env.NEXT_AUTH_SECRET_KEY;
+const ACCESS_TOKEN_SECRET = process.env.NEXT_AUTH_ACCESS_TOKEN_SECRET;
 
 export default async function handler(
 	req: NextApiRequest,
@@ -21,9 +21,8 @@ export default async function handler(
 		take,
 		userId,
 	} = req.query;
-	const token = req.headers.authorization;
-	console.log(token);
-	if (!token || !verify(token, ACCESS_TOKEN_SECRET!)) {
+	const { AUTH_COOKIE } = req.cookies;
+	if (!AUTH_COOKIE || !verify(AUTH_COOKIE, ACCESS_TOKEN_SECRET!)) {
 		return res.json({
 			error: "Unauthorized",
 			status: 401,
@@ -40,13 +39,21 @@ export default async function handler(
 				userId: body.userId,
 			},
 		});
-		return res.json(result);
+
+		if (!result) {
+			return res.status(500).json({ message: "Internal server error" });
+		}
+
+		return res.status(200).json(result);
 	} else if (req.method === "GET" && totalTransaction) {
 		if (totalTransaction === "true") {
 			const result: [{ totalExpense: number; totalIncome: number }] =
 				await prisma.$queryRaw`
     SELECT SUM(CASE WHEN transactionType = 'EXPENSE' THEN amount ELSE 0 END) as totalExpense, SUM(CASE WHEN transactionType = 'INCOME' THEN amount ELSE 0 END) as totalIncome FROM cashflow
   `;
+			if (!result) {
+				return res.status(404).json({ message: "Not found" });
+			}
 			return res.json(result);
 		}
 	} else if (req.method === "GET") {
@@ -88,6 +95,9 @@ export default async function handler(
 		const totalPages: number = await prisma.$queryRaw`
 SELECT CEIL(COUNT(*) / ${Number(take)}) as totalPages FROM cashflow
 `;
+		if (!result || !totalPages) {
+			return res.status(404).json({ message: "Not found" });
+		}
 
 		return res.json({
 			result: result,

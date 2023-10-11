@@ -65,12 +65,16 @@ function UpdateModalMemoized({ isOpen, onClose, data }: UpdateModalProps) {
 	return (
 		<Modal isOpen={isOpen} onClose={onClose}>
 			<ModalOverlay />
-			<ModalContent>
-				<ModalHeader>Edit Cash Flow</ModalHeader>
+			<ModalContent className="dark:bg-container-dark">
+				<ModalHeader className="dark:text-slate-200">
+					Edit Cash Flow
+				</ModalHeader>
 				<ModalCloseButton />
 				<ModalBody pb={6}>
 					<FormControl isInvalid={isAmountRequired}>
-						<FormLabel>Amount</FormLabel>
+						<FormLabel className="dark:text-slate-200">
+							Amount
+						</FormLabel>
 						<CurrencyInput
 							placeholder="Amount"
 							defaultValue={amount}
@@ -79,24 +83,26 @@ function UpdateModalMemoized({ isOpen, onClose, data }: UpdateModalProps) {
 								setAmount(Number(value));
 							}}
 							prefix="Rp"
-							className={`border border-1 w-full h-10 rounded-md px-4 focus:outline-blue-500 ${
+							className={`border dark:border-slate-500 dark:bg-container-dark dark:text-white border-1 w-full h-10 rounded-md px-4 focus:outline-blue-500 ${
 								isAmountRequired && "border-red-500 border-2"
 							}`}
 							onBlur={handleAmountBlur}
 						/>
 						{!isAmountRequired ? (
-							<FormHelperText>
+							<FormHelperText className="dark:text-slate-400">
 								Enter the amount you want to track.
 							</FormHelperText>
 						) : (
-							<FormErrorMessage>
+							<FormErrorMessage className="dark:text-red-300">
 								Amount is required.
 							</FormErrorMessage>
 						)}
 					</FormControl>
 
 					<FormControl mt={4} isInvalid={isDescriptionRequired}>
-						<FormLabel>Description</FormLabel>
+						<FormLabel className="dark:text-slate-200">
+							Description
+						</FormLabel>
 						<Textarea
 							value={description}
 							onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -104,13 +110,14 @@ function UpdateModalMemoized({ isOpen, onClose, data }: UpdateModalProps) {
 							}}
 							placeholder="Enter description"
 							onBlur={handleDescriptionBlur}
+							className="dark:border-slate-500 dark:bg-container-dark dark:text-white"
 						/>
 						{!isDescriptionRequired ? (
-							<FormHelperText>
+							<FormHelperText className="dark:text-slate-400">
 								Enter the description.
 							</FormHelperText>
 						) : (
-							<FormErrorMessage>
+							<FormErrorMessage className="dark:text-red-300">
 								Description is required.
 							</FormErrorMessage>
 						)}
@@ -118,7 +125,9 @@ function UpdateModalMemoized({ isOpen, onClose, data }: UpdateModalProps) {
 
 					<Stack direction="row" spacing={4}>
 						<FormControl mt={4} isInvalid={isCategoryRequired}>
-							<FormLabel>Category</FormLabel>
+							<FormLabel className="dark:text-slate-200">
+								Category
+							</FormLabel>
 							<Select
 								value={category}
 								onChange={(
@@ -132,18 +141,33 @@ function UpdateModalMemoized({ isOpen, onClose, data }: UpdateModalProps) {
 									setCategory(selectedCategory);
 								}}
 								onBlur={handleCategoryBlur}
+								className="dark:text-white dark:bg-container-dark dark:border-slate-500"
 							>
-								<option value="EXPENSE">Expense</option>
-								<option value="INCOME">Income</option>
+								<option
+									value="EXPENSE"
+									className="dark:text-black"
+								>
+									Expense
+								</option>
+								<option
+									value="INCOME"
+									className="dark:text-black"
+								>
+									Income
+								</option>
 							</Select>
 						</FormControl>
 						<FormControl mt={4}>
-							<FormLabel>Date</FormLabel>
-							<SingleDatepicker
-								name="date-input"
-								date={date}
-								onDateChange={setDate}
-							/>
+							<FormLabel className="dark:text-slate-200">
+								Date
+							</FormLabel>
+							<div className="rounded-lg dark:bg-white">
+								<SingleDatepicker
+									name="date-input"
+									date={date}
+									onDateChange={setDate}
+								/>
+							</div>
 						</FormControl>
 					</Stack>
 				</ModalBody>

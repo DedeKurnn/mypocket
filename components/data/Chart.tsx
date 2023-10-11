@@ -2,7 +2,8 @@ import HighchartsReact from "highcharts-react-official";
 import Highcharts from "highcharts";
 import mapDataToMonths from "@/lib/mapDataToMonths";
 import { CashFlow } from "@prisma/client";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { CashFlowContext } from "@/context/cashFlowContext";
 
 type ChartProps = {
 	expenseData: CashFlow[];
@@ -20,11 +21,12 @@ interface AxisFormatterContext {
 const Chart = ({ expenseData, incomeData }: ChartProps) => {
 	const income = mapDataToMonths(incomeData);
 	const expense = mapDataToMonths(expenseData);
+	const [theme, setTheme] = useState("light");
+	const { isDarkMode } = useContext(CashFlowContext);
 
 	const difference = income.map(
 		(incomeValue, index) => incomeValue - expense[index]
 	);
-
 	const months = [
 		"Jan",
 		"Feb",
@@ -67,6 +69,11 @@ const Chart = ({ expenseData, incomeData }: ChartProps) => {
 			accessibility: {
 				description: "Countries",
 			},
+			labels: {
+				style: {
+					color: "#868686",
+				},
+			},
 		},
 		yAxis: {
 			min: -500,
@@ -77,12 +84,15 @@ const Chart = ({ expenseData, incomeData }: ChartProps) => {
 				formatter: function (this: AxisFormatterContext): string {
 					return Highcharts.numberFormat(this.value, 0);
 				},
+				style: {
+					color: "#868686",
+				},
 			},
 			plotLines: [
 				{
 					value: 0,
 					width: 1,
-					color: "#aaa",
+					color: "#0a0a",
 					zIndex: 10,
 				},
 			],
@@ -138,20 +148,49 @@ const Chart = ({ expenseData, incomeData }: ChartProps) => {
 		},
 	});
 
+	useEffect(() => {
+		setOptions((prevOptions: any) => ({
+			...prevOptions,
+			legend: {
+				itemStyle: { color: isDarkMode ? "#aaa" : "#000" },
+			},
+			yAxis: {
+				...prevOptions.yAxis,
+				labels: {
+					...prevOptions.yAxis.labels,
+					style: {
+						color: isDarkMode ? "#aaa" : "#000", // Change label color based on isDarkMode
+					},
+				},
+			},
+			xAxis: {
+				...prevOptions.xAxis,
+				labels: {
+					...prevOptions.xAxis.labels,
+					style: {
+						color: isDarkMode ? "#aaa" : "#000", // Change label color based on isDarkMode
+					},
+				},
+				lineColor: isDarkMode ? "#aaa" : "#000",
+			},
+		}));
+	}, [isDarkMode]);
+
 	return (
 		<div
-			className="grid w-full grid-cols-1 my-4 bg-white rounded-lg highcharts-dark dark:bg-container-dark place-content-center w-p-4"
+			className="grid w-full grid-cols-1 my-4 bg-white rounded-lg shadow-sm highcharts-dark dark:bg-container-dark place-content-center w-p-4"
 			id="highchart"
 		>
-			<h2 className="bottom-0 my-4 font-semibold text-20xl right-">
+			<h2 className="my-8 ml-8 font-semibold text-20xl dark:text-slate-300">
 				Yearly Data
 			</h2>
-			<div className="w-full mb-8 border-b-2 bg-slate-900" />
-			<HighchartsReact
-				highcharts={Highcharts}
-				options={options}
-				constructorType="chart"
-			/>
+			<div className="px-4">
+				<HighchartsReact
+					highcharts={Highcharts}
+					options={options}
+					constructorType="chart"
+				/>
+			</div>
 		</div>
 	);
 };

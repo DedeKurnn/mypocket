@@ -4,15 +4,11 @@ import {
 	SyntheticEvent,
 	useState,
 	useEffect,
-	useContext,
 } from "react";
 import { CashFlowContextType } from "@/lib/types/cash-flow";
-import useAxiosPrivate from "@/lib/hooks/useAxiosPrivate";
 import axios from "@/lib/axios";
-import AuthContext from "./AuthContext";
 
 export const CashFlowContext = createContext<CashFlowContextType>({
-	accessToken: "",
 	userData: {
 		createdAt: "",
 		email: "",
@@ -20,6 +16,8 @@ export const CashFlowContext = createContext<CashFlowContextType>({
 		name: "",
 		updatedAt: "",
 	},
+	isDarkMode: false,
+	setIsDarkMode: () => {},
 	setUserData: () => {},
 	isRefetch: false,
 	setIsRefetch: () => {},
@@ -48,9 +46,8 @@ export const CashFlowContextProvider = ({
 }: {
 	children: ReactNode;
 }) => {
-	const axiosPrivate = useAxiosPrivate();
-	const [accessToken, setAccessToken] = useState("");
 	const [isRefetch, setIsRefetch] = useState(false);
+	const [isDarkMode, setIsDarkMode] = useState(false);
 	const [userData, setUserData] = useState<CashFlowContextType["userData"]>({
 		createdAt: "",
 		email: "",
@@ -58,6 +55,14 @@ export const CashFlowContextProvider = ({
 		name: "",
 		updatedAt: "",
 	});
+
+	useEffect(() => {
+		if (isDarkMode) {
+			document.querySelector("html")?.classList.add("dark");
+		} else {
+			document.querySelector("html")?.classList.remove("dark");
+		}
+	}, [isDarkMode]);
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -85,7 +90,7 @@ export const CashFlowContextProvider = ({
 			date.getTime() - date.getTimezoneOffset() * 60000
 		);
 
-		await axiosPrivate.post(`/api/cashflow`, {
+		await axios.post(`/api/cashflow`, {
 			amount: amount,
 			description: description,
 			date: dateOffset,
@@ -101,9 +106,7 @@ export const CashFlowContextProvider = ({
 		id: number
 	) => {
 		e.preventDefault();
-		await axiosPrivate.delete(
-			`/api/cashflow/${id}?userIdQuery=${userData.id}`
-		);
+		await axios.delete(`/api/cashflow/${id}?userIdQuery=${userData.id}`);
 		setIsRefetch(true);
 	};
 
@@ -120,7 +123,7 @@ export const CashFlowContextProvider = ({
 		const dateOffset = new Date(
 			date.getTime() - date.getTimezoneOffset() * 60000
 		);
-		await axiosPrivate.patch(`/api/cashflow/${id}`, {
+		await axios.patch(`/api/cashflow/${id}`, {
 			amount: amount,
 			description: description,
 			date: dateOffset,
@@ -139,8 +142,9 @@ export const CashFlowContextProvider = ({
 				handleCreateData,
 				handleEditData,
 				handleDeleteData,
-				accessToken,
 				setUserData,
+				isDarkMode,
+				setIsDarkMode,
 			}}
 		>
 			{children}

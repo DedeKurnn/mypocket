@@ -1,25 +1,19 @@
 import prisma from "@/lib/prisma";
-import jwt from "jsonwebtoken";
-import { sign } from "@/lib/jose";
+import { sign, decrypt } from "@/lib/jose";
 import type { NextApiRequest, NextApiResponse } from "next";
 
-interface IRequestBody {
-	username: string;
-	password: string;
-}
-
-const ACCESS_TOKEN_SECRET = process.env.NEXT_AUTH_SECRET_KEY;
+const ACCESS_TOKEN_SECRET = process.env.NEXT_AUTH_ACCESS_TOKEN_SECRET;
 const REFRESH_TOKEN_SECRET = process.env.NEXT_AUTH_REFRESH_TOKEN_SECRET;
 
 export default async function handler(
 	req: NextApiRequest,
 	res: NextApiResponse
 ) {
-	const cookie = req.cookies;
+	const { AUTH_COOKIE } = req.cookies;
 
-	if (!cookie.AUTH_COOKIE) return res.status(401);
+	if (!AUTH_COOKIE) return res.status(401);
 
-	const refreshToken = cookie.AUTH_COOKIE;
+	const refreshToken = AUTH_COOKIE;
 
 	const user = await prisma.user.findFirst({
 		where: {
@@ -28,9 +22,17 @@ export default async function handler(
 	});
 
 	if (!user) return res.status(403);
-	jwt.verify(refreshToken, REFRESH_TOKEN_SECRET!, (err, decoded) => {
-		if (err || !decoded) return res.status(403);
-		const accessToken = sign({ decoded }, ACCESS_TOKEN_SECRET!, 30);
-		return res.json({ accessToken });
-	});
+
+	const decodedRefreshToken = await decrypt(
+		refreshToken,
+		REFRESH_TOKEN_SECRET!
+	);
+	if (!decodedRefreshToken) return res.status(403);
+
+	const accessToken = await sign(
+		decodedRefreshToken,
+		ACCESS_TOKEN_SECRET!,
+		30
+	);
+	return res.json({ accessToken });
 }
