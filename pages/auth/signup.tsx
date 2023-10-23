@@ -77,10 +77,10 @@ const SignUp = () => {
 							required
 						/>
 					</FormControl>
-					<FormControl isInvalid={error?.isAlreadyExist}>
+					<FormControl isInvalid={error?.isBadRequest}>
 						<FormLabel>Email</FormLabel>
 						<Input type="email" id="email" name="email" required />
-						{error?.isAlreadyExist && (
+						{error?.isBadRequest && (
 							<FormErrorMessage>
 								Email already registered
 							</FormErrorMessage>

@@ -37,7 +37,7 @@ const DataTable = ({
 		<SkeletonTable />
 	) : (
 		<TableContainer className="my-4 bg-white dark:bg-container-dark py-4 rounded-lg">
-			<Table variant="simple" size="md">
+			<Table variant="unstyled" size="md">
 				<Thead>
 					<Tr>
 						<Th className="w-fit dark:text-slate-400">Amount</Th>

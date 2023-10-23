@@ -12,8 +12,8 @@ module.exports = {
 				"sidebar-collapsed": "64px auto", //for collapsed sidebar layout
 			},
 			colors: {
-				"main-dark": "#0F172A",
-				"container-dark": "#111c36",
+				"main-dark": "#0e1424",
+				"container-dark": "#0F172A",
 			},
 		},
 	},

@@ -59,6 +59,8 @@ export default async function handler(
 			});
 
 			return res.json({ message: "Successfull" });
+		} else {
+			return res.status(400).json({ message: "ID is required!" });
 		}
 	}
 }

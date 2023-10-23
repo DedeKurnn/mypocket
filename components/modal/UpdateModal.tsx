@@ -1,4 +1,11 @@
-import { ChangeEvent, memo, useState, useEffect, useContext } from "react";
+import {
+	ChangeEvent,
+	memo,
+	useState,
+	useEffect,
+	useContext,
+	useRef,
+} from "react";
 import { CashFlowContext } from "@/context/cashFlowContext";
 
 import {
@@ -29,7 +36,6 @@ type UpdateModalProps = {
 
 function UpdateModalMemoized({ isOpen, onClose, data }: UpdateModalProps) {
 	const { handleEditData } = useContext(CashFlowContext);
-
 	const [date, setDate] = useState(new Date(data.date));
 	const [amount, setAmount] = useState(data.amount);
 	const [description, setDescription] = useState(data.description!);
@@ -43,7 +49,9 @@ function UpdateModalMemoized({ isOpen, onClose, data }: UpdateModalProps) {
 	const [isCategoryRequired, setIsCategoryRequired] = useState(false);
 
 	const handleAmountBlur = () => {
-		setIsAmountRequired(amount === 0);
+		setIsAmountRequired(
+			amount === 0 || amount === undefined || amount === null
+		);
 	};
 
 	const handleDescriptionBlur = () => {
@@ -81,12 +89,13 @@ function UpdateModalMemoized({ isOpen, onClose, data }: UpdateModalProps) {
 							decimalsLimit={2}
 							onValueChange={(value) => {
 								setAmount(Number(value));
+								handleAmountBlur();
 							}}
 							prefix="Rp"
 							className={`border dark:border-slate-500 dark:bg-container-dark dark:text-white border-1 w-full h-10 rounded-md px-4 focus:outline-blue-500 ${
 								isAmountRequired && "border-red-500 border-2"
 							}`}
-							onBlur={handleAmountBlur}
+							required={true}
 						/>
 						{!isAmountRequired ? (
 							<FormHelperText className="dark:text-slate-400">
@@ -107,9 +116,9 @@ function UpdateModalMemoized({ isOpen, onClose, data }: UpdateModalProps) {
 							value={description}
 							onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {
 								setDescription(e.target.value);
+								handleDescriptionBlur();
 							}}
 							placeholder="Enter description"
-							onBlur={handleDescriptionBlur}
 							className="dark:border-slate-500 dark:bg-container-dark dark:text-white"
 						/>
 						{!isDescriptionRequired ? (
@@ -139,8 +148,8 @@ function UpdateModalMemoized({ isOpen, onClose, data }: UpdateModalProps) {
 										| "EXPENSE"
 										| "INCOME";
 									setCategory(selectedCategory);
+									handleCategoryBlur();
 								}}
-								onBlur={handleCategoryBlur}
 								className="dark:text-white dark:bg-container-dark dark:border-slate-500"
 							>
 								<option

@@ -6,6 +6,10 @@ import { verify } from "@/lib/jose";
 
 const ACCESS_TOKEN_SECRET = process.env.NEXT_AUTH_ACCESS_TOKEN_SECRET;
 
+type PageData = {
+	totalPages: number;
+};
+
 export default async function handler(
 	req: NextApiRequest,
 	res: NextApiResponse
@@ -92,16 +96,18 @@ export default async function handler(
 			},
 		});
 
-		const totalPages: number = await prisma.$queryRaw`
+		const totalPages: PageData[] = await prisma.$queryRaw`
 SELECT CEIL(COUNT(*) / ${Number(take)}) as totalPages FROM cashflow
 `;
 		if (!result || !totalPages) {
 			return res.status(404).json({ message: "Not found" });
 		}
 
+		const totalPagesValue = totalPages[0];
+
 		return res.json({
 			result: result,
-			totalPages,
+			...totalPagesValue,
 		});
 	}
 }

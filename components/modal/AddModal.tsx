@@ -51,7 +51,9 @@ function AddModalMemoized({ isOpen, onClose, refetch }: AddModalProps) {
 	const [isLoading, setIsLoading] = useState(false);
 
 	const handleAmountBlur = () => {
-		setIsAmountRequired(amount === 0);
+		setIsAmountRequired(
+			amount === 0 || amount === undefined || amount === null
+		);
 	};
 
 	const handleDescriptionBlur = () => {
@@ -100,13 +102,22 @@ function AddModalMemoized({ isOpen, onClose, refetch }: AddModalProps) {
 							defaultValue={0}
 							decimalsLimit={2}
 							onValueChange={(value) => {
-								setAmount(Number(value));
+								if (
+									value !== null &&
+									value !== undefined &&
+									value !== ""
+								) {
+									setAmount(Number(value));
+								} else {
+									setAmount(0);
+								}
 							}}
 							prefix="Rp"
 							className={`border dark:border-slate-500 dark:bg-container-dark dark:text-white border-1 w-full h-10 rounded-md px-4 focus:outline-blue-500 ${
 								isAmountRequired && "border-red-500 border-2"
 							}`}
 							onBlur={handleAmountBlur}
+							required
 						/>
 						{!isAmountRequired ? (
 							<FormHelperText className="dark:text-slate-400">

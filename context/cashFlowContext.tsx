@@ -7,6 +7,9 @@ import {
 } from "react";
 import { CashFlowContextType } from "@/lib/types/cash-flow";
 import axios from "@/lib/axios";
+import { AxiosError } from "axios";
+import { useToast } from "@chakra-ui/react";
+import useHandleError, { Error } from "@/lib/hooks/useHandleError";
 
 export const CashFlowContext = createContext<CashFlowContextType>({
 	userData: {
@@ -46,6 +49,10 @@ export const CashFlowContextProvider = ({
 }: {
 	children: ReactNode;
 }) => {
+	const toast = useToast();
+	const checkError = useHandleError();
+	const [error, setError] = useState<Error>();
+
 	const [isRefetch, setIsRefetch] = useState(false);
 	const [isDarkMode, setIsDarkMode] = useState(false);
 	const [userData, setUserData] = useState<CashFlowContextType["userData"]>({
@@ -86,6 +93,21 @@ export const CashFlowContextProvider = ({
 		category: string,
 		date: Date
 	) => {
+		if (
+			amount === 0 ||
+			description.trim().length === 0 ||
+			category.trim().length === 0
+		) {
+			toast({
+				title: "Something's not right",
+				description: "One or more field is required",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
+
+			return;
+		}
 		const dateOffset = new Date(
 			date.getTime() - date.getTimezoneOffset() * 60000
 		);
@@ -106,7 +128,24 @@ export const CashFlowContextProvider = ({
 		id: number
 	) => {
 		e.preventDefault();
-		await axios.delete(`/api/cashflow/${id}?userIdQuery=${userData.id}`);
+		try {
+			const response = await axios.delete(
+				`/api/cashflow/${id}?userIdQuery=${userData.id}`
+			);
+		} catch (e) {
+			const err = e as AxiosError;
+			setError(checkError(err.response?.status!));
+
+			if (error?.isBadRequest) {
+				toast({
+					title: "Something's not right",
+					description: err.message,
+					status: "error",
+					duration: 5000,
+					isClosable: true,
+				});
+			}
+		}
 		setIsRefetch(true);
 	};
 
@@ -120,6 +159,21 @@ export const CashFlowContextProvider = ({
 		userId: string
 	) => {
 		e.preventDefault();
+		if (
+			amount === 0 ||
+			description.trim().length === 0 ||
+			category.trim().length === 0
+		) {
+			toast({
+				title: "Something's not right",
+				description: "One or more field is required",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
+
+			return;
+		}
 		const dateOffset = new Date(
 			date.getTime() - date.getTimezoneOffset() * 60000
 		);

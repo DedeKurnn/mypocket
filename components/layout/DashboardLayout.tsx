@@ -12,23 +12,21 @@ const DashboardLayout = (props: PropsWithChildren) => {
 	const [showSidebar, setShowSidebar] = useState(true);
 	return (
 		<div
-			className={classNames(
-				{
-					"grid bg-zinc-100 min-h-screen min-w-full": true,
-					"md:grid-cols-sidebar grid-cols-1": !collapsed,
-					"md:grid-cols-sidebar-collapsed grid-cols-1": collapsed,
-					"transition-[grid-template-columns] duration-300 ease-in-out":
-						true,
-				},
-				inter.className
-			)}
+			className={classNames({
+				"grid bg-zinc-100 min-h-screen min-w-full": true,
+				"md:grid-cols-sidebar grid-cols-1": !collapsed,
+				"md:grid-cols-sidebar-collapsed grid-cols-1": collapsed,
+				"transition-[grid-template-columns] duration-300 ease-in-out":
+					true,
+				inter,
+			})}
 		>
 			<Sidebar
 				collapsed={collapsed}
 				setCollapsed={setSidebarCollapsed}
 				shown={showSidebar}
 			/>
-			<div className="w-full shrink dark:bg-main-dark">
+			<div className="dark:bg-main-dark">
 				<Navbar
 					onMenuButtonClick={() => setShowSidebar((prev) => !prev)}
 				/>

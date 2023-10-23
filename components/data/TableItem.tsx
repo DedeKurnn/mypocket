@@ -54,11 +54,13 @@ const TableItem: FC<ICashFlow> = ({
 				id={id}
 				onDelete={(e: SyntheticEvent) => handleDeleteData(e, id)}
 			/>
-			<Tr>
+			<Tr className="border-b-[1px] dark:border-gray-700 border-gray-300">
 				<Td className="dark:text-slate-300">
 					Rp{amount.toLocaleString("id-ID")}
 				</Td>
-				<Td className="dark:text-slate-300">{description}</Td>
+				<Td className="dark:text-slate-300 whitespace-normal">
+					{description}
+				</Td>
 				<Td className="dark:text-slate-300">
 					{date.toString().split("T")[0]}
 				</Td>

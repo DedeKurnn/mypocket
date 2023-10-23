@@ -1,5 +1,5 @@
 export type Error = {
-	isAlreadyExist: boolean;
+	isBadRequest: boolean;
 	isInternalError: boolean;
 	isNotFound: boolean;
 	isUnauthorized: boolean;
@@ -8,7 +8,7 @@ export type Error = {
 const useHandleError = () => {
 	const checkError = (status: number) => {
 		const error = {
-			isAlreadyExist: false,
+			isBadRequest: false,
 			isInternalError: false,
 			isNotFound: false,
 			isUnauthorized: false,
@@ -21,7 +21,7 @@ const useHandleError = () => {
 		} else if (status === 401) {
 			error.isUnauthorized = true;
 		} else if (status === 400) {
-			error.isAlreadyExist = true;
+			error.isBadRequest = true;
 		}
 
 		return error;

@@ -80,7 +80,7 @@ const CashFlow = () => {
 	};
 
 	const handleNext = () => {
-		if (pageNumber >= data?.data.totalPages) {
+		if (pageNumber <= data?.data.totalPages) {
 			setPageNumber(pageNumber + 1);
 		}
 	};

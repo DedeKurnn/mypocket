@@ -105,14 +105,14 @@ const Chart = ({ expenseData, incomeData }: ChartProps) => {
 		},
 		series: [
 			{
-				name: "Pengeluaran",
-				data: expense,
-				color: "#FF6D60",
-			},
-			{
 				name: "Pemasukan",
 				data: income,
 				color: "#00DFA2",
+			},
+			{
+				name: "Pengeluaran",
+				data: expense,
+				color: "#FF6D60",
 			},
 			{
 				name: "Bersih",
