@@ -41,23 +41,9 @@ export default async function handler(
 		});
 
 		if (user) {
-			const { ...userWithoutPassword } = user;
-			const accessToken = await sign(
-				userWithoutPassword,
-				ACCESS_TOKEN_SECRET!,
-				MAX_AGE
-			);
-
-			const serialized = serialize("AUTH_COOKIE", accessToken, {
-				httpOnly: false,
-				sameSite: "strict",
-				maxAge: MAX_AGE,
-				path: "/",
-			});
-
-			return res.setHeader("Set-Cookie", serialized).status(200).json({
-				message: "Authenticated",
-			});
+			return res
+				.status(200)
+				.json({ message: "User created successfully" });
 		} else {
 			return res.status(500).json({
 				message: "Internal Server Error: Failed to create a new user.",

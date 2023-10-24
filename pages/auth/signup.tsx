@@ -32,7 +32,7 @@ const SignUp = () => {
 			const response = await axios.post("/api/auth/register", payload);
 
 			if (response.status === 200) {
-				push("/dashboard");
+				push("/auth/signin");
 			}
 		} catch (e) {
 			const err = e as AxiosError;
