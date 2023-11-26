@@ -13,10 +13,7 @@ interface IRequestBody {
 
 const MAX_AGE = 60 * 60 * 24 * 30;
 
-export default async function handler(
-	req: NextApiRequest,
-	res: NextApiResponse
-) {
+export async function handler(req: NextApiRequest, res: NextApiResponse) {
 	if (req.method === "POST") {
 		const body: IRequestBody = await req.body;
 

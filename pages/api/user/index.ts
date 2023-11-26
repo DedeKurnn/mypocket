@@ -20,10 +20,7 @@ function isJWTPayload(obj: any): obj is JWTPayload {
 	return "id" in obj;
 }
 
-export default async function handler(
-	req: NextApiRequest,
-	res: NextApiResponse
-) {
+export async function handler(req: NextApiRequest, res: NextApiResponse) {
 	const { AUTH_COOKIE } = req.cookies;
 	const body: IRequestBody = req.body;
 	const userData = await verify(AUTH_COOKIE!, ACCESS_TOKEN_SECRET!);

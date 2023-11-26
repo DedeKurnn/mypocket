@@ -6,10 +6,7 @@ import { verify } from "@/lib/jose";
 
 const ACCESS_TOKEN_SECRET = process.env.NEXT_AUTH_ACCESS_TOKEN_SECRET;
 
-export default async function handler(
-	req: NextApiRequest,
-	res: NextApiResponse
-) {
+export async function handler(req: NextApiRequest, res: NextApiResponse) {
 	await prisma.$connect();
 	const { id, userIdQuery } = req.query;
 	const { amount, description, date, transactionType, userId } =

@@ -5,10 +5,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 const ACCESS_TOKEN_SECRET = process.env.NEXT_AUTH_ACCESS_TOKEN_SECRET;
 const REFRESH_TOKEN_SECRET = process.env.NEXT_AUTH_REFRESH_TOKEN_SECRET;
 
-export default async function handler(
-	req: NextApiRequest,
-	res: NextApiResponse
-) {
+export async function handler(req: NextApiRequest, res: NextApiResponse) {
 	const { AUTH_COOKIE } = req.cookies;
 
 	if (!AUTH_COOKIE) return res.status(401);
