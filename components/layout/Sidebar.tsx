@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import Link from "next/link";
 import Image from "next/image";
-import axios from "@/lib/axios";
+import axios from "axios";
 import { useRouter } from "next/router";
 
 import { defaultNavItems, NavItem } from "./DefaultNavItems";

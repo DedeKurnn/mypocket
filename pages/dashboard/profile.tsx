@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { SyntheticEvent, useContext, useEffect, useState } from "react";
 import { CashFlowContext } from "@/context/cashFlowContext";
-import axios from "@/lib/axios";
+import axios from "axios";
 import { useRouter } from "next/router";
 import { AxiosError } from "axios";
 

@@ -6,7 +6,7 @@ import {
 	useEffect,
 } from "react";
 import { CashFlowContextType } from "@/lib/types/cash-flow";
-import axios from "@/lib/axios";
+import axios from "axios";
 import { AxiosError } from "axios";
 import { useToast } from "@chakra-ui/react";
 import useHandleError, { Error } from "@/lib/hooks/useHandleError";

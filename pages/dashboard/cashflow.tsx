@@ -2,7 +2,7 @@ import { useEffect, useState, useContext } from "react";
 import { useDisclosure } from "@chakra-ui/react";
 import { useQuery } from "react-query";
 import { CashFlowContext } from "@/context/cashFlowContext";
-import axios from "@/lib/axios";
+import axios from "axios";
 
 import { Button, useToast } from "@chakra-ui/react";
 import { PlusIcon } from "@heroicons/react/24/outline";
