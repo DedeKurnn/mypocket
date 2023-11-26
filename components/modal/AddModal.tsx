@@ -34,7 +34,7 @@ import { CashFlowContext } from "@/context/cashFlowContext";
 type AddModalProps = {
 	isOpen: boolean;
 	onClose: () => void;
-	refetch: () => void;
+	refetch: Dispatch<SetStateAction<any>>;
 };
 
 function AddModalMemoized({ isOpen, onClose, refetch }: AddModalProps) {
@@ -79,9 +79,9 @@ function AddModalMemoized({ isOpen, onClose, refetch }: AddModalProps) {
 		setDescription("");
 		setAmount(0);
 		setCategory("");
+		refetch(true);
 		setIsLoading(false);
 		onClose();
-		refetch();
 	};
 
 	return (
