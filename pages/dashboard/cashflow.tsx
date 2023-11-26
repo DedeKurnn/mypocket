@@ -34,7 +34,6 @@ const CashFlow = () => {
 		data: data,
 		refetch,
 		isRefetching,
-		isFetching,
 	} = useQuery(
 		[
 			"/api/cashflow",
@@ -123,7 +122,6 @@ const CashFlow = () => {
 					setPrev={handlePrev}
 					setNext={handleNext}
 					pageNumber={pageNumber}
-					isFetching={isFetching}
 				/>
 			</section>
 		</>
