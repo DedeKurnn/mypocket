@@ -33,6 +33,7 @@ const CashFlow = () => {
 		isError,
 		data: data,
 		refetch,
+		isRefetching,
 	} = useQuery(
 		[
 			"/api/cashflow",
@@ -116,6 +117,7 @@ const CashFlow = () => {
 				<DataTable
 					data={data?.data.result}
 					loading={isLoading}
+					isRefetching={isRefetching}
 					setSkip={setPageNumber}
 					setPrev={handlePrev}
 					setNext={handleNext}

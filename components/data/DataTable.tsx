@@ -15,6 +15,7 @@ import { ChangeEvent, SetStateAction, memo } from "react";
 import SkeletonTable from "@/components/data/SkeletonTable";
 import TableItem from "@/components/data/TableItem";
 import { ICashFlow } from "@/lib/types/cash-flow";
+import SkeletonTableItem from "./SkeletonTableItem";
 
 type DataTableProps = {
 	data: ICashFlow[];
@@ -23,6 +24,7 @@ type DataTableProps = {
 	setSkip: SetStateAction<any>;
 	setNext: SetStateAction<any>;
 	setPrev: SetStateAction<any>;
+	isRefetching: boolean;
 };
 
 const DataTable = ({
@@ -32,6 +34,7 @@ const DataTable = ({
 	setSkip,
 	setNext,
 	setPrev,
+	isRefetching,
 }: DataTableProps) => {
 	return loading ? (
 		<SkeletonTable />
@@ -50,6 +53,7 @@ const DataTable = ({
 					</Tr>
 				</Thead>
 				<Tbody>
+					{isRefetching && <SkeletonTableItem />}
 					{data !== null &&
 					data !== undefined &&
 					data.length !== 0 ? (
