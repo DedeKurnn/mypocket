@@ -10,7 +10,10 @@ type PageData = {
 	totalPages: number;
 };
 
-export async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+	req: NextApiRequest,
+	res: NextApiResponse
+) {
 	await prisma.$connect();
 	const body: CashFlow = await req.body;
 	const {

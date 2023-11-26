@@ -5,7 +5,10 @@ import { verify } from "@/lib/jose";
 
 const ACCESS_TOKEN_SECRET = process.env.NEXT_AUTH_ACCESS_TOKEN_SECRET;
 
-export async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+	req: NextApiRequest,
+	res: NextApiResponse
+) {
 	const { AUTH_COOKIE } = req.cookies;
 	const { id } = req.query;
 
