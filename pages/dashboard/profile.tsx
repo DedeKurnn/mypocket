@@ -129,14 +129,14 @@ const Profile = () => {
 								onChange={setUsername}
 							/>
 						</FormControl>
-						<FormControl isInvalid={error?.isAlreadyExist}>
+						<FormControl isInvalid={error?.isBadRequest}>
 							<EditableInputComponent
 								value={email}
 								label="Email"
 								onChange={setEmail}
 								type="email"
 							/>
-							{error?.isAlreadyExist && (
+							{error?.isBadRequest && (
 								<FormErrorMessage>
 									Email is used in another account
 								</FormErrorMessage>

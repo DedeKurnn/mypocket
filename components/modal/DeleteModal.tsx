@@ -21,7 +21,7 @@ type DeleteModalProps = {
 };
 
 const DeleteModal = ({ onClose, isOpen, onDelete }: DeleteModalProps) => {
-	const cancelRef = useRef();
+	const cancelRef = useRef() as React.MutableRefObject<any>;
 	return (
 		<>
 			<AlertDialog

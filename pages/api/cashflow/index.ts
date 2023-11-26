@@ -53,7 +53,7 @@ export default async function handler(
 		if (totalTransaction === "true") {
 			const result: [{ totalExpense: number; totalIncome: number }] =
 				await prisma.$queryRaw`
-    SELECT SUM(CASE WHEN transactionType = 'EXPENSE' THEN amount ELSE 0 END) as totalExpense, SUM(CASE WHEN transactionType = 'INCOME' THEN amount ELSE 0 END) as totalIncome FROM cashflow
+    SELECT SUM(CASE WHEN "transactionType" = 'EXPENSE' THEN "amount" ELSE 0 END) as "totalExpense", SUM(CASE WHEN "transactionType" = 'INCOME' THEN "amount" ELSE 0 END) as "totalIncome" FROM "CashFlow"
   `;
 			if (!result) {
 				return res.status(404).json({ message: "Not found" });
@@ -97,7 +97,7 @@ export default async function handler(
 		});
 
 		const totalPages: PageData[] = await prisma.$queryRaw`
-SELECT CEIL(COUNT(*) / ${Number(take)}) as totalPages FROM cashflow
+SELECT CEIL(COUNT(*) / ${Number(take)}) as "totalPages" FROM "CashFlow"
 `;
 		if (!result || !totalPages) {
 			return res.status(404).json({ message: "Not found" });
