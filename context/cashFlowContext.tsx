@@ -105,22 +105,20 @@ export const CashFlowContextProvider = ({
 				duration: 5000,
 				isClosable: true,
 			});
-
-			return;
+			return 204;
 		}
 		const dateOffset = new Date(
 			date.getTime() - date.getTimezoneOffset() * 60000
 		);
 
-		await axios.post(`/api/cashflow`, {
+		const response = await axios.post(`/api/cashflow`, {
 			amount: amount,
 			description: description,
 			date: dateOffset,
 			transactionType: category,
 			userId: userData.id,
 		});
-
-		setIsRefetch(true);
+		return response.status;
 	};
 
 	const handleDeleteData: CashFlowContextType["handleDeleteData"] = async (

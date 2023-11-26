@@ -72,16 +72,25 @@ function AddModalMemoized({ isOpen, onClose, refetch }: AddModalProps) {
 		}
 	}, [isAmountRequired, isDescriptionRequired, isCategoryRequired]);
 
-	const postData = (e: SyntheticEvent) => {
+	const postData = async (e: SyntheticEvent) => {
 		setIsLoading(true);
 		e.preventDefault();
-		handleCreateData(amount, description, category, date);
+		const result = await handleCreateData(
+			amount,
+			description,
+			category,
+			date
+		);
+
+		if (result === 200) {
+			refetch(true);
+			onClose();
+		}
+
 		setDescription("");
 		setAmount(0);
 		setCategory("");
-		refetch(true);
 		setIsLoading(false);
-		onClose();
 	};
 
 	return (

@@ -40,5 +40,5 @@ export type CashFlowContextType = {
 		description: string,
 		category: string,
 		date: Date
-	) => void;
+	) => any;
 };
