@@ -25,6 +25,7 @@ type DataTableProps = {
 	setNext: SetStateAction<any>;
 	setPrev: SetStateAction<any>;
 	isRefetching: boolean;
+	isFetching: boolean;
 };
 
 const DataTable = ({
@@ -35,8 +36,9 @@ const DataTable = ({
 	setNext,
 	setPrev,
 	isRefetching,
+	isFetching,
 }: DataTableProps) => {
-	return loading ? (
+	return loading || isFetching ? (
 		<SkeletonTable />
 	) : (
 		<TableContainer className="my-4 bg-white dark:bg-container-dark py-4 rounded-lg">
