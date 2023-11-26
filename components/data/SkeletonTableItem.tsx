@@ -5,16 +5,16 @@ const SkeletonTableItem = () => {
 	return (
 		<Tr className="border-b-[1px] dark:border-gray-700 border-gray-300">
 			<Td className="dark:text-slate-300">
-				<SkeletonText skeletonHeight="4" />
+				<SkeletonText skeletonHeight="4" noOfLines={1} />
 			</Td>
 			<Td className="dark:text-slate-300 whitespace-normal">
-				<SkeletonText skeletonHeight="4" />
+				<SkeletonText skeletonHeight="4" noOfLines={1} />
 			</Td>
 			<Td className="dark:text-slate-300">
-				<SkeletonText skeletonHeight="4" />
+				<SkeletonText skeletonHeight="4" noOfLines={1} />
 			</Td>
 			<Td className="dark:text-slate-300">
-				<SkeletonText skeletonHeight="4" />
+				<SkeletonText skeletonHeight="4" noOfLines={1} />
 			</Td>
 			<Td>
 				<div className="flex gap-2">
