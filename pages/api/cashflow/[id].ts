@@ -48,7 +48,7 @@ export default async function handler(
 			},
 		});
 
-		return res.json(result);
+		return res.status(200).json(result);
 	} else if (req.method === "DELETE") {
 		if (id) {
 			const result = await prisma.cashFlow.delete({
