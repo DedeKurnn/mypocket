@@ -130,6 +130,10 @@ export const CashFlowContextProvider = ({
 			const response = await axios.delete(
 				`/api/cashflow/${id}?userIdQuery=${userData.id}`
 			);
+
+			if (response.status === 200) {
+				return response.status;
+			}
 		} catch (e) {
 			const err = e as AxiosError;
 			setError(checkError(err.response?.status!));
@@ -143,6 +147,7 @@ export const CashFlowContextProvider = ({
 					isClosable: true,
 				});
 			}
+			return null;
 		}
 		setIsRefetch(true);
 	};

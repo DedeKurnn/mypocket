@@ -1,7 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 
-import { SyntheticEvent, useRef } from "react";
+import { SyntheticEvent, useContext, useRef, useState } from "react";
 
 import {
 	AlertDialog,
@@ -12,16 +12,30 @@ import {
 	AlertDialogOverlay,
 	Button,
 } from "@chakra-ui/react";
+import { CashFlowContext } from "@/context/cashFlowContext";
 
 type DeleteModalProps = {
 	onClose: () => void;
 	isOpen: boolean;
 	id: number;
-	onDelete: (e: SyntheticEvent) => void;
 };
 
-const DeleteModal = ({ onClose, isOpen, onDelete }: DeleteModalProps) => {
+const DeleteModal = ({ onClose, isOpen, id }: DeleteModalProps) => {
+	const { handleDeleteData, setIsRefetch } = useContext(CashFlowContext);
 	const cancelRef = useRef() as React.MutableRefObject<any>;
+	const [isLoading, setIsLoading] = useState(false);
+
+	const deleteData = async (e: SyntheticEvent) => {
+		setIsLoading(true);
+		e.preventDefault();
+		const result = await handleDeleteData(e, id);
+
+		if (result === 200) {
+			setIsRefetch(true);
+			onClose();
+		}
+		setIsLoading(false);
+	};
 	return (
 		<>
 			<AlertDialog
@@ -44,10 +58,19 @@ const DeleteModal = ({ onClose, isOpen, onDelete }: DeleteModalProps) => {
 						</AlertDialogBody>
 
 						<AlertDialogFooter>
-							<Button ref={cancelRef} onClick={onClose}>
+							<Button
+								ref={cancelRef}
+								onClick={onClose}
+								disabled={isLoading}
+							>
 								Cancel
 							</Button>
-							<Button colorScheme="red" onClick={onDelete} ml={3}>
+							<Button
+								colorScheme="red"
+								onClick={deleteData}
+								ml={3}
+								isLoading={isLoading}
+							>
 								Delete
 							</Button>
 						</AlertDialogFooter>

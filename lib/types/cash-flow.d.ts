@@ -25,7 +25,7 @@ export type CashFlowContextType = {
 	isDarkMode: boolean;
 	setIsDarkMode: Dispatch<SetStateAction<boolean>>;
 	setIsRefetch: Dispatch<SetStateAction<boolean>>;
-	handleDeleteData: (e: SyntheticEvent, id: number) => void;
+	handleDeleteData: (e: SyntheticEvent, id: number) => any;
 	handleEditData: (
 		e: SyntheticEvent,
 		id: number,

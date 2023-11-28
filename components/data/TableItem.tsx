@@ -1,6 +1,6 @@
 import { ICashFlow } from "@/lib/types/cash-flow";
 import { CashFlowContext } from "@/context/cashFlowContext";
-import { FC, SyntheticEvent, useContext } from "react";
+import { FC, useContext } from "react";
 
 import { Tr, Td, Button, useDisclosure } from "@chakra-ui/react";
 import {
@@ -19,7 +19,7 @@ const TableItem: FC<ICashFlow> = ({
 	description,
 	id,
 }) => {
-	const { handleDeleteData, userData } = useContext(CashFlowContext);
+	const { userData } = useContext(CashFlowContext);
 
 	const {
 		isOpen: isOpenUpdateModal,
@@ -52,7 +52,6 @@ const TableItem: FC<ICashFlow> = ({
 				onClose={onCloseDeleteModal}
 				isOpen={isOpenDeleteModal}
 				id={id}
-				onDelete={(e: SyntheticEvent) => handleDeleteData(e, id)}
 			/>
 			<Tr className="border-b-[1px] dark:border-gray-700 border-gray-300">
 				<Td className="dark:text-slate-300">

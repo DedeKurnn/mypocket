@@ -48,7 +48,8 @@ const CashFlow = () => {
 			),
 		{
 			keepPreviousData: true,
-			enabled: false,
+			refetchInterval: 5000,
+			refetchIntervalInBackground: true,
 		}
 	);
 
@@ -95,7 +96,7 @@ const CashFlow = () => {
 			/>
 			<section className="p-4">
 				<div className="flex flex-wrap w-full gap-2 p-4 bg-white rounded-lg dark:bg-container-dark md:items-end sm:flex-nowrap">
-					<div className="flex w-full gap-2 sm:w-3/4">
+					<div className="flex flex-wrap items-end w-full bg-white rounded-lg shadow-sm dark:bg-container-dark sm:flex-nowrap">
 						<Filter
 							transactionType={transactionType}
 							setTransactionType={setTransactionType}

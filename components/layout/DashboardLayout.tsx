@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import React, { PropsWithChildren, useState } from "react";
+import React, { PropsWithChildren, useEffect, useState } from "react";
 import { Inter } from "next/font/google";
 
 import Navbar from "./Navbar";
@@ -9,7 +9,14 @@ const inter = Inter({ subsets: ["latin"] });
 
 const DashboardLayout = (props: PropsWithChildren) => {
 	const [collapsed, setSidebarCollapsed] = useState(false);
-	const [showSidebar, setShowSidebar] = useState(true);
+	const [showSidebar, setShowSidebar] = useState(false);
+
+	useEffect(() => {
+		if (window.innerWidth > 768) {
+			setShowSidebar(true);
+		}
+	}, []);
+
 	return (
 		<div
 			className={classNames({
