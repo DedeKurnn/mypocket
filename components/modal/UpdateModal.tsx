@@ -4,7 +4,7 @@ import {
 	useState,
 	useEffect,
 	useContext,
-	useRef,
+	SyntheticEvent,
 } from "react";
 import { CashFlowContext } from "@/context/cashFlowContext";
 
@@ -35,7 +35,8 @@ type UpdateModalProps = {
 };
 
 function UpdateModalMemoized({ isOpen, onClose, data }: UpdateModalProps) {
-	const { handleEditData } = useContext(CashFlowContext);
+	const { handleEditData, setIsRefetch } = useContext(CashFlowContext);
+	const [isLoading, setIsLoading] = useState(false);
 	const [date, setDate] = useState(new Date(data.date));
 	const [amount, setAmount] = useState(data.amount);
 	const [description, setDescription] = useState(data.description!);
@@ -69,6 +70,26 @@ function UpdateModalMemoized({ isOpen, onClose, data }: UpdateModalProps) {
 			setIsDisabled(false);
 		}
 	}, [isAmountRequired, isDescriptionRequired, isCategoryRequired]);
+
+	const editData = async (e: SyntheticEvent) => {
+		setIsLoading(true);
+		e.preventDefault();
+		const result = await handleEditData(
+			e,
+			data.id,
+			amount,
+			description,
+			category,
+			date,
+			data.userId
+		);
+
+		if (result === 200) {
+			setIsRefetch(true);
+			onClose();
+		}
+		setIsLoading(false);
+	};
 
 	return (
 		<Modal isOpen={isOpen} onClose={onClose}>
@@ -185,20 +206,10 @@ function UpdateModalMemoized({ isOpen, onClose, data }: UpdateModalProps) {
 					<Button
 						colorScheme="blue"
 						mr={3}
-						onClick={(e) => {
-							handleEditData(
-								e,
-								data.id,
-								amount,
-								description,
-								category,
-								date,
-								data.userId
-							);
-							onClose();
-						}}
+						onClick={editData}
 						isDisabled={isDisabled}
 						loadingText="Saving"
+						isLoading={isLoading}
 					>
 						Save
 					</Button>

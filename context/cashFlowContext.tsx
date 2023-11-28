@@ -149,7 +149,6 @@ export const CashFlowContextProvider = ({
 			}
 			return null;
 		}
-		setIsRefetch(true);
 	};
 
 	const handleEditData: CashFlowContextType["handleEditData"] = async (
@@ -180,14 +179,19 @@ export const CashFlowContextProvider = ({
 		const dateOffset = new Date(
 			date.getTime() - date.getTimezoneOffset() * 60000
 		);
-		await axios.patch(`/api/cashflow/${id}`, {
+		const response = await axios.patch(`/api/cashflow/${id}`, {
 			amount: amount,
 			description: description,
 			date: dateOffset,
 			transactionType: category,
 			userId: userId,
 		});
-		setIsRefetch(true);
+
+		if (response.status === 200) {
+			return response.status;
+		} else {
+			return null;
+		}
 	};
 
 	return (

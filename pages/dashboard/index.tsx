@@ -45,8 +45,6 @@ const Overview = () => {
 			),
 		{
 			keepPreviousData: true,
-			refetchInterval: 5000,
-			refetchIntervalInBackground: true,
 			enabled: false,
 		}
 	);

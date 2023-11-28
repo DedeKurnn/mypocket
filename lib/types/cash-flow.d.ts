@@ -34,7 +34,7 @@ export type CashFlowContextType = {
 		category: string,
 		date: Date,
 		userId: string
-	) => void;
+	) => any;
 	handleCreateData: (
 		amount: number,
 		description: string,

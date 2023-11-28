@@ -48,7 +48,7 @@ const CashFlow = () => {
 			),
 		{
 			keepPreviousData: true,
-			refetchInterval: 5000,
+			refetchInterval: 10000,
 			refetchIntervalInBackground: true,
 		}
 	);
