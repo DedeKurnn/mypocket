@@ -48,6 +48,7 @@ const CashFlow = () => {
 			),
 		{
 			keepPreviousData: true,
+			enabled: false,
 		}
 	);
 
